@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Vehicle</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="hello_world">Hello world</string>
+    <string name="start">start</string>
+    <string name="api">AIzaSyDVpo7xTz7wk5tS4JMMRSXFwbu_6iZho-o</string>
+</resources>
