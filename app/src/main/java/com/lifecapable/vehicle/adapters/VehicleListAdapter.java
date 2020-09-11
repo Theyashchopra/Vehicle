@@ -11,17 +11,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lifecapable.vehicle.R;
-import com.lifecapable.vehicle.datamodels.DriverData;
 import com.lifecapable.vehicle.datamodels.Vehicles;
 
 import java.util.List;
 
-public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.DriverViewHolder> {
+public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.DriverViewHolder> {
     List<Vehicles> mList;
     Context mContext;
     Fragment mFragment;
 
-    public DriverAdapter(List<Vehicles> mList, Context mContext, Fragment mFragment) {
+    public VehicleListAdapter(List<Vehicles> mList, Context mContext, Fragment mFragment) {
         this.mList = mList;
         this.mContext = mContext;
         this.mFragment = mFragment;
@@ -38,7 +37,7 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.DriverView
     public void onBindViewHolder(@NonNull DriverViewHolder holder, int position) {
         Vehicles curr = mList.get(position);
         holder.oname.setText(curr.getName());
-        holder.dname.setText(curr.getNumber());
+        holder.dname.setText(curr.getPlateNumber());
     }
 
     @Override

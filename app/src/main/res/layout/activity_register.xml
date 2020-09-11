@@ -69,6 +69,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Register"
+        android:textColor="@android:color/white"
+        android:background="@drawable/background_accent"
         android:layout_margin="8dp" />
 
 </LinearLayout>

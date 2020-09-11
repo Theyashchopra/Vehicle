@@ -48,7 +48,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.lifecapable.vehicle.GPS.GpsUtils;
 import com.lifecapable.vehicle.R;
-import com.lifecapable.vehicle.adapters.DriverAdapter;
+import com.lifecapable.vehicle.adapters.VehicleListAdapter;
 import com.lifecapable.vehicle.adapters.VehicleAdapter;
 import com.lifecapable.vehicle.datamodels.DriverData;
 import com.lifecapable.vehicle.datamodels.VehicleData;
@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     private Boolean mLocationPermissionsGranted = false;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Animation slideDown,slideUp;
-    private int bottomState = 0;
+    private int bottomState;
     private List<Vehicles> vehiclesList;
     //For First bottom card
     private LinearLayout bottomll;
@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     //for Third bottom card
     private RecyclerView driverRecycle;
     private List<DriverData> driverList;
-    private DriverAdapter driverAdapter;
+    private VehicleListAdapter vehicleListAdapter;
     private ImageView pin;
 
     //for filter page
@@ -111,6 +111,9 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_home, container, false);
+
+        bottomState = 0;
+
         mapView = root.findViewById(R.id.mapfragment);
         pin = root.findViewById(R.id.pin);
         searchView = root.findViewById(R.id.homesearch);
@@ -134,12 +137,6 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         slideUp = AnimationUtils.loadAnimation(getContext(),R.anim.slide_up);
         vehiclesList = new ArrayList<>();
 
-        //second bottom layout back button
-        backIV.setOnClickListener(v -> {
-            bottomcl.setVisibility(View.GONE);
-            bottomll.setVisibility(View.VISIBLE);
-        });
-
         mapView.onCreate(savedInstanceState);
         getLocationPermission();
         initMap();
@@ -156,7 +153,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if(root.findViewById(R.id.driverlistrl).getVisibility() == View.VISIBLE && root.findViewById(R.id.bottom_rl3).getVisibility() == View.GONE){
+/*                if(root.findViewById(R.id.driverlistrl).getVisibility() == View.VISIBLE && root.findViewById(R.id.bottom_rl3).getVisibility() == View.GONE){
                     root.startAnimation(slideDown);
                     pin.setVisibility(View.VISIBLE);
                     root.findViewById(R.id.driverlistrl).setVisibility(View.GONE);
@@ -166,6 +163,40 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                     a.addCategory(Intent.CATEGORY_HOME);
                     a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(a);
+                }*/
+
+                switch(bottomState){
+                    case 1:
+                        bottomcl.setVisibility(View.GONE);
+                        bottomll.setVisibility(View.VISIBLE);
+                        bottomState = 0;
+                        break;
+                    case 2:
+                        root.findViewById(R.id.filtercl).setVisibility(View.GONE);
+                        bottomcl.setVisibility(View.VISIBLE);
+                        root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
+                        map.clear();
+                        bottomState = 1;
+                        break;
+                    case 3:
+                        bottomState = 2;
+                        root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
+                        root.findViewById(R.id.filtercl).setVisibility(View.VISIBLE);
+                        root.findViewById(R.id.pin).setVisibility(View.GONE);
+                        break;
+                    case 4:
+                        bottomState = 3;
+                        root.startAnimation(slideDown);
+                        pin.setVisibility(View.VISIBLE);
+                        root.findViewById(R.id.driverlistrl).setVisibility(View.GONE);
+                        root.findViewById(R.id.bottom_rl3).setVisibility(View.VISIBLE);
+                        break;
+                    default:
+                        Intent a = new Intent(Intent.ACTION_MAIN);
+                        a.addCategory(Intent.CATEGORY_HOME);
+                        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(a);
+                        break;
                 }
             }
         });
@@ -177,8 +208,15 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         bottom1cards[0].setOnClickListener(v -> {initSecondBottom(1);});
         bottom1cards[1].setOnClickListener(v -> {initSecondBottom(2);});
         bottom1cards[2].setOnClickListener(v -> {initSecondBottom(3);});
+        bottomState = 0;
     }
     private void initSecondBottom(int clicked){
+        bottomState = 1;
+        backIV.setOnClickListener(v -> {
+            bottomcl.setVisibility(View.GONE);
+            bottomll.setVisibility(View.VISIBLE);
+            bottomState = 0;
+        });
         vehiclelist = new ArrayList<>();
         switch (clicked){
             case 1:
@@ -214,6 +252,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         bottomcl.setVisibility(View.VISIBLE);
     }
     public void initFilterPage(String type){
+        bottomState = 2;
         String currentDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         fdatefrom.setText(currentDate);
         fdateto.setText(currentDate);
@@ -222,7 +261,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             bottomcl.setVisibility(View.VISIBLE);
             root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
             map.clear();
-
+            bottomState = 1;
         });
         filtersearchbutton.setOnClickListener(v -> {
             initThirdBottom("Tata");
@@ -264,9 +303,10 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         filtercl.setVisibility(View.VISIBLE);
         bottomcl.setVisibility(View.GONE);
         root.findViewById(R.id.pin).setVisibility(View.GONE);
-
     }
     public void initThirdBottom(String veh){
+
+        bottomState = 3;
         TextView tv = root.findViewById(R.id.typetv3);
         tv.setText(veh);
         /*driverList = new ArrayList<>();
@@ -281,9 +321,9 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         driverList.add(new DriverData("YOYO","YEAH"));
         driverList.add(new DriverData("YOYO","YEAH"));*/
         createTestMarkerList();
-        driverAdapter = new DriverAdapter(vehiclesList, getContext(),this);
+        vehicleListAdapter = new VehicleListAdapter(vehiclesList, getContext(),this);
         driverRecycle = root.findViewById(R.id.driverrecycle);
-        AlphaInAnimationAdapter alphaInAnimationAdapter = new AlphaInAnimationAdapter(driverAdapter);
+        AlphaInAnimationAdapter alphaInAnimationAdapter = new AlphaInAnimationAdapter(vehicleListAdapter);
         alphaInAnimationAdapter.setDuration(1000);
         alphaInAnimationAdapter.setInterpolator(new OvershootInterpolator());
         alphaInAnimationAdapter.setFirstOnly(false);
@@ -291,6 +331,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         driverRecycle.scheduleLayoutAnimation();
         ImageView up = root.findViewById(R.id.arrowup);
         up.setOnClickListener(v -> {
+            bottomState = 4;
             root.startAnimation(slideUp);
             new Handler().postDelayed(() -> {
                 pin.setVisibility(View.INVISIBLE);
@@ -299,12 +340,14 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             },300);
         });
         root.findViewById(R.id.downarrow).setOnClickListener(v -> {
+            bottomState = 3;
             root.startAnimation(slideDown);
             pin.setVisibility(View.VISIBLE);
             root.findViewById(R.id.driverlistrl).setVisibility(View.GONE);
             root.findViewById(R.id.bottom_rl3).setVisibility(View.VISIBLE);
         });
         root.findViewById(R.id.backimage3).setOnClickListener(v -> {
+            bottomState = 2;
             root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
             root.findViewById(R.id.filtercl).setVisibility(View.VISIBLE);
             root.findViewById(R.id.pin).setVisibility(View.GONE);
@@ -453,27 +496,26 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
 
     private void createTestMarkerList(){
         vehiclesList.clear();
-        vehiclesList.add(new Vehicles("SBC TRAVELS","MH 31 EX 1234","9234324XX45",21.159369, 79.062351));
-        vehiclesList.add(new Vehicles("ABC TRAVELS","MH 31 EA 1235","9234324XX45",21.167452, 79.075419));
-        vehiclesList.add(new Vehicles("DBC TRAVELS","MH 31 EB 1236","9234324XX45",21.160786, 79.093762));
-        vehiclesList.add(new Vehicles("CBC TRAVELS","MH 31 EC 1237","9234324XX45",21.140029, 79.085561));
-        vehiclesList.add(new Vehicles("BBC TRAVELS","MH 31 EZ 1238","9234324XX45",21.130568, 79.099805));
-        vehiclesList.add(new Vehicles("XBC TRAVELS","MH 31 EV 1239","9234324XX45",21.185917, 79.083619));
-        vehiclesList.add(new Vehicles("ZBC TRAVELS","MH 31 EB 1240","9234324XX45",21.141036, 79.109948));
-        vehiclesList.add(new Vehicles("VBC TRAVELS","MH 31 EN 1231","9234324XX45",21.133185, 79.047577));
-        vehiclesList.add(new Vehicles("MBC TRAVELS","MH 31 EM 1232","9234324XX45",21.122473, 79.062218));
-        vehiclesList.add(new Vehicles("NBC TRAVELS","MH 31 ES 1233","9234324XX45",21.118241, 79.016849));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","SBC TRAVELS","1234","15000","5000","1999",21.159369, 79.062351));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","ABC TRAVELS","1234","15000","5000","1999",21.167452, 79.075419));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","DBC TRAVELS","1234","15000","5000","1999",21.160786, 79.093762));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","CBC TRAVELS","1234","15000","5000","1999",21.140029, 79.085561));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","BBC TRAVELS","1234","15000","5000","1999",21.130568, 79.099805));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","XBC TRAVELS","1234","15000","5000","1999",21.185917, 79.083619));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","ZBC TRAVELS","1234","15000","5000","1999",21.141036, 79.109948));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","VBC TRAVELS","1234","15000","5000","1999",21.133185, 79.047577));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","MBC TRAVELS","1234","15000","5000","1999",21.122473, 79.062218));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","NBC TRAVELS","1234","15000","5000","1999",21.118241, 79.016849));
         //wardha
-        vehiclesList.add(new Vehicles("QBC TRAVELS","MH 31 ES 1233","9234324XX45",20.751936, 78.596291));
-        vehiclesList.add(new Vehicles("WBC TRAVELS","MH 31 ES 1233","9234324XX45",20.750812, 78.613458));
-        vehiclesList.add(new Vehicles("EBC TRAVELS","MH 31 ES 1233","9234324XX45",20.759239, 78.606849));
-        vehiclesList.add(new Vehicles("RBC TRAVELS","MH 31 ES 1233","9234324XX45",20.754424, 78.625131));
-        vehiclesList.add(new Vehicles("TBC TRAVELS","MH 31 ES 1233","9234324XX45",20.761968, 78.585992));
-        vehiclesList.add(new Vehicles("YBC TRAVELS","MH 31 ES 1233","9234324XX45",20.751760, 78.646405));
-        vehiclesList.add(new Vehicles("UBC TRAVELS","MH 31 ES 1233","9234324XX45",20.754030, 78.580616));
-        vehiclesList.add(new Vehicles("IBC TRAVELS","MH 31 ES 1233","9234324XX45",20.735726, 78.630914));
-        vehiclesList.add(new Vehicles("OBC TRAVELS","MH 31 ES 1233","9234324XX45",20.766843, 78.598762));
-        vehiclesList.add(new Vehicles("PBC TRAVELS","MH 31 ES 1233","9234324XX45",20.713900, 78.605072));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","QBC TRAVELS","1234","15000","5000","1999",20.751936, 78.596291));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","EBC TRAVELS","1234","15000","5000","1999",20.759239, 78.606849));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","RBC TRAVELS","1234","15000","5000","1999",20.754424, 78.625131));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","TBC TRAVELS","1234","15000","5000","1999",20.761968, 78.585992));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","YBC TRAVELS","1234","15000","5000","1999",20.751760, 78.646405));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","UBC TRAVELS","1234","15000","5000","1999",20.754030, 78.580616));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","IBC TRAVELS","1234","15000","5000","1999",20.735726, 78.630914));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","OBC TRAVELS","1234","15000","5000","1999",20.766843, 78.598762));
+        vehiclesList.add(new Vehicles("MH 31 A 1234","PBC TRAVELS","1234","15000","5000","1999",20.713900, 78.605072));
     }
 
     @Override
@@ -488,8 +530,11 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                 Bundle args = new Bundle();
                 Log.i(TAG, "onMarkerClick: "+v.getName());
                 args.putString("name",v.getName());
-                args.putString("mobile",v.getContact());
-                args.putString("plate",v.getNumber());
+                args.putString("madein",v.getYear());
+                args.putString("hours",v.getHours());
+                args.putString("rentperday",v.getRentPerDay());
+                args.putString("rentperHour",v.getRentPerHour());
+                args.putString("number",v.getPlateNumber());
                 mk.setArguments(args);
                 mk.show(getActivity().getSupportFragmentManager(),"marker");
                 return true;

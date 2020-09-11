@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="200dp"
     android:background="@drawable/background_white"
-    android:layout_height="200dp">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/header"
@@ -73,7 +73,26 @@
         android:layout_marginTop="20dp"
         android:layout_below="@id/hrs"
         android:layout_toEndOf="@id/rpd"/>
+    <TextView
+        android:id="@+id/rph"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rent per Hour "
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/rpd"
+        android:layout_alignParentStart="true"/>
+    <TextView
+        android:id="@+id/rentperhour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="rs14000"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/rpd"
+        android:layout_toEndOf="@id/rph"/>
     <Button
+        android:id="@+id/pviewinfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="VIEW INFO"
@@ -81,6 +100,6 @@
         android:background="@drawable/circular_white_border"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/rentperday"/>
+        android:layout_below="@+id/rph"/>
 
 </RelativeLayout>
