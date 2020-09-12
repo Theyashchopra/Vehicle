@@ -531,7 +531,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                 Log.i(TAG, "onMarkerClick: "+v.getName());
                 args.putString("name",v.getName());
                 args.putString("madein",v.getYear());
-                args.putString("hours",v.getHours());
+                args.putString("kms",v.getKms());
                 args.putString("rentperday",v.getRentPerDay());
                 args.putString("rentperHour",v.getRentPerHour());
                 args.putString("number",v.getPlateNumber());

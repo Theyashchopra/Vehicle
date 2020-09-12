@@ -1,27 +1,24 @@
 package com.lifecapable.vehicle.dialogs;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
+import androidx.navigation.Navigation;
 import com.lifecapable.vehicle.R;
 
 public class MarkerPopup extends DialogFragment {
     View view;
-    TextView name,madeintv,rpDaytv,hoursusedtv,rpHourtv;
-    String vName,madeIn,hoursUsed,rentPerDay,rentPerHour,plate;
+    TextView name,madeintv,rpDaytv,kmscompletedtv,rpHourtv;
+    String vName,madeIn,kmscompleted,rentPerDay,rentPerHour,plate;
     Button viewInfo;
 
     @Nullable
@@ -32,7 +29,7 @@ public class MarkerPopup extends DialogFragment {
         Bundle args = getArguments();
         vName = args.getString("name");
         madeIn = args.getString("madein");
-        hoursUsed = args.getString("hours");
+        kmscompleted = args.getString("kms");
         rentPerDay = args.getString("rentperday");
         rentPerHour = args.getString("rentperHour");
         plate = args.getString("number");
@@ -42,18 +39,18 @@ public class MarkerPopup extends DialogFragment {
         name = view.findViewById(R.id.company_name);
         madeintv = view.findViewById(R.id.made);
         rpDaytv = view.findViewById(R.id.rentperday);
-        hoursusedtv = view.findViewById(R.id.noofhours);
+        kmscompletedtv = view.findViewById(R.id.kmscompleted);
         rpHourtv = view.findViewById(R.id.rentperhour);
         viewInfo = view.findViewById(R.id.pviewinfo);
         name.setText(vName);
         madeintv.setText(madeIn);
-        hoursusedtv.setText(hoursUsed);
+        kmscompletedtv.setText(kmscompleted);
         rpDaytv.setText(rentPerDay);
         rpHourtv.setText(rentPerHour);
 
         viewInfo.setOnClickListener(v -> {
-
-
+            Navigation.findNavController(getActivity(),R.id.nav_host_fragment).navigate(R.id.action_navigation_home_to_viewDetailsFragment);
+            getDialog().dismiss();
         });
         return view;
     }

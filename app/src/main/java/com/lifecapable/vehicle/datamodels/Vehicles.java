@@ -2,12 +2,12 @@ package com.lifecapable.vehicle.datamodels;
 
 public class Vehicles {
 
-    private String name, hours, rentPerDay, rentPerHour, year, plateNumber;
+    private String name, kms, rentPerDay, rentPerHour, year, plateNumber;
     private double latitude, longitude;
 
-    public Vehicles(String plateNumber, String name, String hours, String rentPerDay, String rentPerHour, String year, double latitude, double longitude) {
+    public Vehicles(String plateNumber, String name, String kms, String rentPerDay, String rentPerHour, String year, double latitude, double longitude) {
         this.name = name;
-        this.hours = hours;
+        this.kms = kms;
         this.rentPerDay = rentPerDay;
         this.rentPerHour = rentPerHour;
         this.year = year;
@@ -24,12 +24,12 @@ public class Vehicles {
         this.name = name;
     }
 
-    public String getHours() {
-        return hours;
+    public String getKms() {
+        return kms;
     }
 
-    public void setHours(String hours) {
-        this.hours = hours;
+    public void setKms(String kms) {
+        this.kms = kms;
     }
 
     public String getRentPerDay() {

@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lifecapable.vehicle.R;
@@ -38,6 +40,10 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
         Vehicles curr = mList.get(position);
         holder.oname.setText(curr.getName());
         holder.dname.setText(curr.getPlateNumber());
+        holder.cardcl.setOnClickListener(v ->{
+            Navigation.findNavController(mFragment.getActivity(),R.id.nav_host_fragment)
+                    .navigate(R.id.action_navigation_home_to_viewDetailsFragment);
+        });
     }
 
     @Override
@@ -47,10 +53,12 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
 
     public static class DriverViewHolder extends RecyclerView.ViewHolder{
         TextView dname,oname;
+        ConstraintLayout cardcl;
         public DriverViewHolder(@NonNull View itemView) {
             super(itemView);
             dname = itemView.findViewById(R.id.drivername);
             oname = itemView.findViewById(R.id.organizationname);
+            cardcl = itemView.findViewById(R.id.drivercardcl);
         }
     }
 }

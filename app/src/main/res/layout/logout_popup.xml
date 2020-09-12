@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_white">
+
+    <TextView
+        android:id="@+id/lg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="LOGOUT"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:background="@android:color/holo_orange_dark"/>
+
+    <TextView
+        android:id="@+id/aus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Are you sure?"
+        android:layout_margin="8dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/lg"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/aus">
+        <Button
+            android:id="@+id/no"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="NO"
+            android:textColor="@android:color/white"
+            android:layout_margin="4dp"
+            android:background="@drawable/background_green"/>
+        <Button
+            android:id="@+id/yes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="YES"
+            android:textColor="@android:color/white"
+            android:layout_margin="4dp"
+            android:background="@drawable/background_red"/>
+    </LinearLayout>
+
+</RelativeLayout>
