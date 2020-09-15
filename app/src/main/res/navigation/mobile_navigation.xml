@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.lifecapable.vehicle.ui.home.HomeFragment"
+        android:name="com.indiaactive.vehicle.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -23,12 +23,12 @@
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.lifecapable.vehicle.ui.notifications.NotificationsFragment"
+        android:name="com.indiaactive.vehicle.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
     <fragment
         android:id="@+id/viewDetailsFragment"
-        android:name="com.lifecapable.vehicle.ui.home.ViewDetailsFragment"
+        android:name="com.indiaactive.vehicle.ui.home.ViewDetailsFragment"
         android:label="fragment_view_details"
         tools:layout="@layout/fragment_view_details" >
         <action
