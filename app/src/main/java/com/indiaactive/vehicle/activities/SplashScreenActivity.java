@@ -15,20 +15,27 @@ import com.indiaactive.vehicle.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
+    SharedPreferences sharedPreferences;
+    boolean isLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-
+        sharedPreferences = getSharedPreferences("login",MODE_PRIVATE);
+        isLogin = sharedPreferences.getBoolean("login",false);
         new Handler(Looper.myLooper(), message -> {
             Toast.makeText(SplashScreenActivity.this,message.toString(),Toast.LENGTH_SHORT).show();
             return false;
         }).postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashScreenActivity.this,LoginActivity.class));
+                if (isLogin){
+                    startActivity(new Intent(SplashScreenActivity.this,MainActivity.class));
+                }else {
+                    startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+                }
             }
-        },3000);
+        },2500);
     }
 }
