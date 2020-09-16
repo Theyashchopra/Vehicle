@@ -1,13 +1,20 @@
 package com.indiaactive.vehicle.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -15,12 +22,26 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.indiaactive.vehicle.R;
+import com.indiaactive.vehicle.adapters.RestAdapter;
+import com.indiaactive.vehicle.datamodels.UserData;
+import com.indiaactive.vehicle.dialogs.LoginSuccessPopup;
+import com.indiaactive.vehicle.interfaces.API;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
+    Button login,register;
+    TextView notice;
+    TextInputEditText username,password;
     SignInButton google;
     GoogleSignInClient mGoogleSignInClient;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     int RC_SIGN_IN = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         initialise();
         googleSigninLogic();
+        onClickListeners();
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -51,6 +73,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public void initialise(){
         google = findViewById(R.id.sign_in_button);
+        login = findViewById(R.id.loginbt);
+        register = findViewById(R.id.regnow);
+        username = findViewById(R.id.username);
+        password = findViewById(R.id.password);
+        notice = findViewById(R.id.notice);
+        sharedPreferences = getSharedPreferences("login",MODE_PRIVATE);
+        editor = sharedPreferences.edit();
     }
 
     public void googleSigninLogic(){
@@ -83,17 +112,79 @@ public class LoginActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Log.i("Name",account.getDisplayName());
-            Log.i("Email",account.getEmail());
-            Log.i("Image",account.getPhotoUrl().toString());
             // Signed in successfully, show authenticated UI.
-            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.i("Login failed", "signInResult:failed code=" + e.getStatusCode());
             //updateUI(null);
         }
+    }
+
+    public void onClickListeners(){
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                validateFieldsandLogin();
+            }
+        });
+
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+            }
+        });
+    }
+
+    public void validateFieldsandLogin(){
+        String user = username.getText().toString().trim();
+        String pass = password.getText().toString().trim();
+
+        if (user.isEmpty()){
+            username.setError("Username is mandatory");
+            notice.setText("*Username is mandatory*");
+            YoYo.with(Techniques.Shake)
+                    .duration(2000)
+                    .playOn(findViewById(R.id.emailtf));
+            return;
+        }else if (pass.isEmpty()){
+            notice.setText("*Password is mandatory*");
+            YoYo.with(Techniques.Shake)
+                    .duration(2000)
+                    .playOn(findViewById(R.id.passwordtf));
+            return;
+        }
+        API api = RestAdapter.createAPI();
+        Call<UserData> call = api.loginUser(user,pass);
+        call.enqueue(new Callback<UserData>() {
+            @Override
+            public void onResponse(Call<UserData> call, Response<UserData> response) {
+                UserData userData = response.body();
+                if (userData.getEmail() != null){
+                    Log.i("login",String.valueOf(userData.getId()));
+                    editor.putBoolean("login",true);
+                    editor.apply();
+                    LoginSuccessPopup lg = new LoginSuccessPopup();
+                    lg.show(getSupportFragmentManager(),"login");
+                }else{
+                    Log.i("message",userData.getMessage());
+                    YoYo.with(Techniques.Shake)
+                            .duration(2000)
+                            .playOn(findViewById(R.id.emailtf));
+                    YoYo.with(Techniques.Shake)
+                            .duration(2000)
+                            .playOn(findViewById(R.id.passwordtf));
+                    notice.setText("Invalid Credentials");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserData> call, Throwable t) {
+
+            }
+        });
     }
     @Override
     protected void onStart() {
@@ -102,5 +193,13 @@ public class LoginActivity extends AppCompatActivity {
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         //updateUI(account); optional
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 }
