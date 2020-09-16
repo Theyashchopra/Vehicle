@@ -11,5 +11,6 @@ public interface API {
     @GET("user")
     Call<UserData> loginUser(@Query("username")String username,@Query("password")String password);
 
-
+    @GET("user")
+    Call<UserData> getProfile(@Query("id")int id);
 }

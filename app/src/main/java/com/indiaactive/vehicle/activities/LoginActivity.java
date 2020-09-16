@@ -166,6 +166,8 @@ public class LoginActivity extends AppCompatActivity {
                     Log.i("login",String.valueOf(userData.getId()));
                     editor.putBoolean("login",true);
                     editor.apply();
+                    editor.putInt("id",userData.getId());
+                    editor.apply();
                     LoginSuccessPopup lg = new LoginSuccessPopup();
                     lg.show(getSupportFragmentManager(),"login");
                 }else{
