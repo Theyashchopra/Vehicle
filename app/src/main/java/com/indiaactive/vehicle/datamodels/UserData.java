@@ -1,10 +1,13 @@
 package com.indiaactive.vehicle.datamodels;
 
+import com.google.gson.annotations.SerializedName;
+
 public class UserData {
     private int id;
     private String name;
     private String email;
     private String mobile;
+    @SerializedName("google_id")
     private String google;
     private String facebook;
     private String image;

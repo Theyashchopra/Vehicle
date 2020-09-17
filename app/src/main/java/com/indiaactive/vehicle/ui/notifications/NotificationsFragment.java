@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.material.textfield.TextInputEditText;
@@ -150,7 +151,13 @@ public class NotificationsFragment extends Fragment {
                     Bitmap bitmap = StringToBitMap(userData.getImage());
                     if (bitmap != null){
                         profile.setImageBitmap(bitmap);
+                    }else{
+                        Glide.with(getContext())
+                                .load(userData.getImage())
+                                .placeholder(R.drawable.ic_person)
+                                .into(profile);
                     }
+
                 }
             }
 

@@ -114,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            startActivity(new Intent(LoginActivity.this,TwoStepVerificationActivity.class));
             // Signed in successfully, show authenticated UI.
 
         } catch (ApiException e) {
@@ -242,6 +243,9 @@ public class LoginActivity extends AppCompatActivity {
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         //updateUI(account); optional
+        if (account != null){
+            Log.i("Name",account.getEmail());
+        }
     }
 
     @Override
