@@ -3,14 +3,19 @@ package com.indiaactive.vehicle.activities;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.UserHandle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -35,6 +40,7 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
+    ProgressBar progressBar;
     Button login,register;
     TextView notice;
     TextInputEditText username,password;
@@ -47,12 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        findViewById(R.id.loginbt).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,MainActivity.class));
-            }
-        });
+
         findViewById(R.id.regnow).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
         notice = findViewById(R.id.notice);
         sharedPreferences = getSharedPreferences("login",MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        progressBar = findViewById(R.id.progress);
     }
 
     public void googleSigninLogic(){
@@ -126,7 +128,10 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard(LoginActivity.this);
                 validateFieldsandLogin();
+                progressBar.setVisibility(View.VISIBLE);
+                login.setEnabled(false);
             }
         });
 
@@ -134,6 +139,38 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+            }
+        });
+        username.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                login.setEnabled(true);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                login.setEnabled(true);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }
@@ -187,6 +224,16 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+    }
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
     @Override
     protected void onStart() {

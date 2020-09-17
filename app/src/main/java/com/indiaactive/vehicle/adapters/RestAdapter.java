@@ -22,9 +22,9 @@ public class RestAdapter {
         logging.setLevel(Level.BODY);
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(5, TimeUnit.SECONDS);
-        builder.writeTimeout(10, TimeUnit.SECONDS);
-        builder.readTimeout(30, TimeUnit.SECONDS);
+        builder.connectTimeout(60, TimeUnit.SECONDS);
+        builder.writeTimeout(60, TimeUnit.SECONDS);
+        builder.readTimeout(20, TimeUnit.SECONDS);
         if(BuildConfig.DEBUG){
             builder.addInterceptor(logging);
         }

@@ -14,11 +14,34 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:orientation="vertical">
-        <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_login_rafiki"/>
+            android:id="@+id/progress"
+            android:visibility="invisible"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Add Photo"
+            android:layout_margin="5dp"/>
+        <ImageView
+            android:id="@+id/add_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="8dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_add_photo_now"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/notice"
+            android:textColor="@android:color/holo_red_dark"
+            android:layout_margin="5dp"/>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nametf"
         android:layout_width="match_parent"
@@ -28,6 +51,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/nameRg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"/>
@@ -43,6 +67,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/emailRg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -56,6 +81,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/mobileRg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="phone"/>
@@ -72,13 +98,29 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordRg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/conf_passwordtf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirm Password"
+            android:layout_margin="8dp"
+            app:endIconMode="password_toggle"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:id="@+id/confirmPasswordRg"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
     <Button
         android:id="@+id/registerbt"
         android:layout_width="match_parent"

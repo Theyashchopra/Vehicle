@@ -2,16 +2,23 @@ package com.indiaactive.vehicle.ui.notifications;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.material.textfield.TextInputEditText;
 import com.indiaactive.vehicle.R;
 import com.indiaactive.vehicle.adapters.RestAdapter;
@@ -24,11 +31,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NotificationsFragment extends Fragment {
+    ImageView profile,truck;
     View root;
     Button editbt, donebt, logoutbt;
     LogoutPopup logoutPopup;
     TextInputEditText name,email,mobile;
     String image;
+    ProgressBar progressBar;
+    TextInputEditText []array;
+    Button [] barray;
+    ImageView [] imageViews;
     int id;
     SharedPreferences sharedPreferences;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,6 +67,17 @@ public class NotificationsFragment extends Fragment {
         name = root.findViewById(R.id.nameNf);
         email = root.findViewById(R.id.emailNf);
         mobile = root.findViewById(R.id.mobileNf);
+        progressBar = root.findViewById(R.id.progress);
+        profile = root.findViewById(R.id.profile_pic);
+        truck = root.findViewById(R.id.truck);
+        imageViews = new ImageView[] {profile,truck};
+        barray = new Button[]{editbt,logoutbt};
+        array = new TextInputEditText[] {name,email,mobile};
+        try {
+            animateAllStuff();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void getData(){
@@ -73,8 +96,61 @@ public class NotificationsFragment extends Fragment {
                     name.setText(userData.getName());
                     email.setText(userData.getEmail());
                     mobile.setText(userData.getMobile());
+                    progressBar.setVisibility(View.INVISIBLE);
+                    getProfilepic(id);
                 }else{
                     Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserData> call, Throwable t) {
+
+            }
+        });
+    }
+    public void animateAllStuff() throws Exception{
+        for (ImageView imageView : imageViews){
+            YoYo.with(Techniques.SlideInUp)
+                    .duration(2000)
+                    .playOn(imageView);
+        }
+
+        for (TextInputEditText tx : array){
+            YoYo.with(Techniques.SlideInUp)
+                    .duration(2000)
+                    .playOn(tx);
+        }
+
+        for(Button button : barray){
+            YoYo.with(Techniques.SlideInUp)
+                    .duration(2000)
+                    .playOn(button);
+        }
+    }
+    public Bitmap StringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte = Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
+    public void getProfilepic(int id){
+        API api = RestAdapter.createAPI();
+        Call<UserData> call = api.getImage(id);
+        call.enqueue(new Callback<UserData>() {
+            @Override
+            public void onResponse(Call<UserData> call, Response<UserData> response) {
+                UserData userData = response.body();
+                if (userData.getImage() != null){
+                    Bitmap bitmap = StringToBitMap(userData.getImage());
+                    if (bitmap != null){
+                        profile.setImageBitmap(bitmap);
+                    }
                 }
             }
 
