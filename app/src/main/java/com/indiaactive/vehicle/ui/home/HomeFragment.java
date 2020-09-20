@@ -123,9 +123,9 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         bottomll = root.findViewById(R.id.bottom_ll);
         bottomcl = root.findViewById(R.id.bottom_cl1);
         bottom1cards = new RelativeLayout[3];
-        bottom1cards[0] = root.findViewById(R.id.homerl1);
+        /*bottom1cards[0] = root.findViewById(R.id.homerl1);
         bottom1cards[1] = root.findViewById(R.id.homerl2);
-        bottom1cards[2] = root.findViewById(R.id.homerl3);
+        bottom1cards[2] = root.findViewById(R.id.homerl3);*/
         fbackiv = root.findViewById(R.id.backimagefilter);
         filtersearchbutton = root.findViewById(R.id.filtersearch);
         filterrangeseekbar = root.findViewById(R.id.filtercostrange);
@@ -205,10 +205,11 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     * Bottom cards related
     */
     private void initFirstBottom(){
-        bottom1cards[0].setOnClickListener(v -> {initSecondBottom(1);});
+        /*bottom1cards[0].setOnClickListener(v -> {initSecondBottom(1);});
         bottom1cards[1].setOnClickListener(v -> {initSecondBottom(2);});
         bottom1cards[2].setOnClickListener(v -> {initSecondBottom(3);});
-        bottomState = 0;
+        bottomState = 0;*/
+        
     }
     private void initSecondBottom(int clicked){
         bottomState = 1;
@@ -476,22 +477,6 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                 .duration(2000)
                 .repeat(0)
                 .playOn(searchView);
-        YoYo.with(Techniques.BounceInUp)
-                .duration(2000)
-                .repeat(0)
-                .playOn(root.findViewById(R.id.homerl1));
-        YoYo.with(Techniques.BounceInUp)
-                .duration(2000)
-                .repeat(0)
-                .playOn(root.findViewById(R.id.homerl2));
-        YoYo.with(Techniques.BounceInUp)
-                .duration(2000)
-                .repeat(0)
-                .playOn(root.findViewById(R.id.homerl3));
-        YoYo.with(Techniques.Bounce)
-                .duration(3000)
-                .repeat(0)
-                .playOn(pin);
     }
 
     private void createTestMarkerList(){

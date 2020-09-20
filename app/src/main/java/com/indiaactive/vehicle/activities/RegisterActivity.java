@@ -2,11 +2,14 @@ package com.indiaactive.vehicle.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.FileUtils;
 import android.os.StrictMode;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -15,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -24,6 +28,7 @@ import com.indiaactive.vehicle.adapters.RestAdapter;
 import com.indiaactive.vehicle.datamodels.UserData;
 import com.indiaactive.vehicle.dialogs.RegisterSuccess;
 import com.indiaactive.vehicle.imagepickers.Dialog_Get_ImageActivity;
+import com.indiaactive.vehicle.imagepickers.FileUtil;
 import com.indiaactive.vehicle.interfaces.API;
 
 import org.w3c.dom.Text;
@@ -32,10 +37,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,8 +54,9 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
     // https://stackoverflow.com/questions/13562429/how-many-ways-to-convert-bitmap-to-string-and-vice-versa/18052269
     // https://stackoverflow.com/questions/15659250/how-to-convert-an-image-from-url-to-hex-string
     TextView notice;
+    MultipartBody.Part isImage;
     Bitmap imagebitmap, profilebitmap;
-    Uri imageuri,profileuri;
+    Uri imageuri,profileuri,generalUri;
     Dialog_Get_ImageActivity dgi;
     TextInputEditText name,email,mobile,password,confirm;
     Button register;
@@ -132,36 +142,45 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
                     .playOn(confirm);
             return;
         }
-
-        if(profilebitmap != null){
-            image = BitMapToString(profilebitmap);
-            userData.setImage(image);
-        }else if (profileuri != null){
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), profileuri);
-            image = BitMapToString(bitmap);
-            userData.setImage(image);
+        if(generalUri != null){
+            File file = FileUtil.from(this,generalUri);
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("pic", file.getName(), requestFile);
+            isImage = body;
         }
-        Log.i("Image",image);
-        userData.setName(naam);
-        userData.setEmail(mail);
-        userData.setPassword(pass);
-        userData.setMobile(number);
-        Call<UserData> call = RestAdapter.createAPI().registerUser(userData);
+        //creating request body parameters to pass
+        RequestBody fullName = RequestBody.create(MediaType.parse("multipart/form-data"), naam);
+        RequestBody email_id = RequestBody.create(MediaType.parse("multipart/form-data"), mail);
+        RequestBody mobile_number = RequestBody.create(MediaType.parse("multipart/form-data"),number);
+        RequestBody password = RequestBody.create(MediaType.parse("multipart/form-data"), pass);
+        Call<UserData> call;
+        if(isImage != null) {
+            call = RestAdapter.createAPI().registerUser(fullName, email_id, password, mobile_number, isImage);
+        }else{
+            File file = File.createTempFile("temp","jpg");
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("pic", file.getName(), requestFile);
+            call = RestAdapter.createAPI().registerUser(fullName,email_id,password,mobile_number,body);
+
+        }
         call.enqueue(new Callback<UserData>() {
             @Override
             public void onResponse(Call<UserData> call, Response<UserData> response) {
                 UserData u = response.body();
-                if (u.getEmail() != null){
-                    RegisterSuccess rg = new RegisterSuccess();
-                    rg.show(getSupportFragmentManager(),"success");
-                }else{
-                    notice.setText(u.getMessage());
+                if(response.isSuccessful()) {
+                    if (u.getEmail() != null) {
+                        RegisterSuccess rg = new RegisterSuccess();
+                        rg.show(getSupportFragmentManager(), "success");
+                    } else {
+                        notice.setText(u.getMessage());
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<UserData> call, Throwable t) {
-
+                Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
             }
         });
     }
@@ -187,6 +206,7 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
         imagebitmap = null;
         profileuri = imageuri;
         profilebitmap = null;
+        generalUri = imageuri;
     }
 
     @Override
@@ -195,6 +215,7 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
         imageuri = null;
         profilebitmap = imagebitmap;
         profileuri = null;
+        generalUri = getImageUri(this,imagebitmap);
     }
 
     @Override
@@ -233,6 +254,14 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
         bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
         byte [] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    //get uri of bitmap
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
 }

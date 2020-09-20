@@ -2,6 +2,9 @@ package com.indiaactive.vehicle.datamodels;
 
 import com.google.gson.annotations.SerializedName;
 
+import okhttp3.MultipartBody;
+import retrofit2.http.Part;
+
 public class UserData {
     private int id;
     private String name;
@@ -10,11 +13,17 @@ public class UserData {
     @SerializedName("google_id")
     private String google;
     private String facebook;
-    private String image;
     private String password;
     private String message;
+    @SerializedName("google_image")
+    private String google_image;
+    private String image_url;
     public UserData(){
 
+    }
+
+    public void setGoogle_image(String google_image) {
+        this.google_image = google_image;
     }
 
     public void setId(int id) {
@@ -41,9 +50,7 @@ public class UserData {
         this.facebook = facebook;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
+
 
     public void setPassword(String password) {
         this.password = password;
@@ -73,11 +80,16 @@ public class UserData {
         return facebook;
     }
 
-    public String getImage() {
-        return image;
-    }
 
     public String getMessage() {
         return message;
+    }
+
+    public String getGoogle_image() {
+        return google_image;
+    }
+
+    public String getImage_url() {
+        return image_url;
     }
 }

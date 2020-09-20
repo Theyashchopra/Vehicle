@@ -25,6 +25,8 @@ import com.indiaactive.vehicle.adapters.RestAdapter;
 import com.indiaactive.vehicle.datamodels.UserData;
 import com.indiaactive.vehicle.interfaces.API;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,6 +54,7 @@ public class TwoStepVerificationActivity extends AppCompatActivity {
                 loginWithGoogle(acct);
             }
         });
+
     }
 
     private void initialise(GoogleSignInAccount acct){
@@ -76,6 +79,7 @@ public class TwoStepVerificationActivity extends AppCompatActivity {
                     .load(personPhoto)
                     .placeholder(R.drawable.ic_person)
                     .into(imageView);
+            checkGoogleUser(personId);
         }
 
     }
@@ -94,25 +98,60 @@ public class TwoStepVerificationActivity extends AppCompatActivity {
             return;
         }
         progress.setVisibility(View.VISIBLE);
+
         UserData userData = new UserData();
+
         userData.setEmail(personEmail);
         userData.setMobile(call);
         userData.setName(personName);
         userData.setGoogle(personId);
-        userData.setImage(personPhoto.toString());
+        userData.setGoogle_image(personPhoto.toString());
+
         API api = RestAdapter.createAPI();
-        Call<UserData> dataCall = api.registerUser(userData);
+        Call<UserData> dataCall = api.registerGoogleUser(personName,personEmail,call,personId,personPhoto.toString());
         dataCall.enqueue(new Callback<UserData>() {
             @Override
             public void onResponse(Call<UserData> call, Response<UserData> response) {
                 UserData u = response.body();
+                if(response.isSuccessful()) {
+                    if (u.getEmail() != null) {
+                        editor.putBoolean("login", true);
+                        editor.apply();
+                        editor.putInt("id", u.getId());
+                        editor.apply();
+                        startActivity(new Intent(TwoStepVerificationActivity.this, MainActivity.class));
+                    } else {
+                        Toast.makeText(TwoStepVerificationActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        progress.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserData> call, Throwable t) {
+                progress.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    private void checkGoogleUser(String google){
+        register.setEnabled(false);
+        progress.setVisibility(View.VISIBLE);
+        API api = RestAdapter.createAPI();
+        Call<UserData> call = api.getGoogleUser(google);
+        call.enqueue(new Callback<UserData>() {
+            @Override
+            public void onResponse(Call<UserData> call, Response<UserData> response) {
+                UserData u = response.body();
                 if (u.getEmail() != null){
+                    register.setEnabled(true);
                     editor.putBoolean("login",true);
                     editor.apply();
                     editor.putInt("id",u.getId());
                     editor.apply();
                     startActivity(new Intent(TwoStepVerificationActivity.this,MainActivity.class));
                 }else{
+                    register.setEnabled(true);
                     Toast.makeText(TwoStepVerificationActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                     progress.setVisibility(View.INVISIBLE);
                 }
@@ -120,7 +159,9 @@ public class TwoStepVerificationActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UserData> call, Throwable t) {
+                Toast.makeText(TwoStepVerificationActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                 progress.setVisibility(View.INVISIBLE);
+                register.setEnabled(true);
             }
         });
     }

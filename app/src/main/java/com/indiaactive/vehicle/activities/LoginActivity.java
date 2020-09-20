@@ -74,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void initialise(){
         google = findViewById(R.id.sign_in_button);
+        setGooglePlusButtonText(google,"Sign in with Google");
         login = findViewById(R.id.loginbt);
         register = findViewById(R.id.regnow);
         username = findViewById(R.id.username);
@@ -254,5 +255,17 @@ public class LoginActivity extends AppCompatActivity {
         a.addCategory(Intent.CATEGORY_HOME);
         a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(a);
+    }
+    protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
+        // Find the TextView that is inside of the SignInButton and set its text
+        for (int i = 0; i < signInButton.getChildCount(); i++) {
+            View v = signInButton.getChildAt(i);
+
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
+                tv.setText(buttonText);
+                return;
+            }
+        }
     }
 }

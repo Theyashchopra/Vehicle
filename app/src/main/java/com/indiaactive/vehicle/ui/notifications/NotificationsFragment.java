@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -27,6 +28,10 @@ import com.indiaactive.vehicle.datamodels.UserData;
 import com.indiaactive.vehicle.dialogs.LogoutPopup;
 import com.indiaactive.vehicle.interfaces.API;
 
+import java.io.InputStream;
+import java.net.URL;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,15 +51,16 @@ public class NotificationsFragment extends Fragment {
     SharedPreferences sharedPreferences;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_notifications, container, false);
-
         initialise();
-
-
         logoutbt.setOnClickListener(v -> {
             logoutPopup.show(getActivity().getSupportFragmentManager(),"logout");
 
         });
-        getData();
+        try {
+            getData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return root;
     }
 
@@ -81,7 +87,7 @@ public class NotificationsFragment extends Fragment {
         }
     }
 
-    public void getData(){
+    public void getData() throws Exception{
         if (id == 0){
             Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
             return;
@@ -98,7 +104,19 @@ public class NotificationsFragment extends Fragment {
                     email.setText(userData.getEmail());
                     mobile.setText(userData.getMobile());
                     progressBar.setVisibility(View.INVISIBLE);
-                    getProfilepic(id);
+                    if (userData.getGoogle_image() != null){
+                        Glide.with(getContext())
+                                .load(userData.getGoogle_image())
+                                .placeholder(R.drawable.ic_person)
+                                .into(profile);
+                        return;
+                    }
+                    try {
+                        getProfilepic(id);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }else{
                     Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
                 }
@@ -140,31 +158,32 @@ public class NotificationsFragment extends Fragment {
         }
     }
 
-    public void getProfilepic(int id){
+    public void getProfilepic(int id) throws Exception{
         API api = RestAdapter.createAPI();
-        Call<UserData> call = api.getImage(id);
-        call.enqueue(new Callback<UserData>() {
+        Call<ResponseBody> call = api.getImage(id);
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<UserData> call, Response<UserData> response) {
-                UserData userData = response.body();
-                if (userData.getImage() != null){
-                    Bitmap bitmap = StringToBitMap(userData.getImage());
-                    if (bitmap != null){
-                        profile.setImageBitmap(bitmap);
-                    }else{
-                        Glide.with(getContext())
-                                .load(userData.getImage())
-                                .placeholder(R.drawable.ic_person)
-                                .into(profile);
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    Bitmap bmp = BitmapFactory.decodeStream(response.body().byteStream());
+                    if(bmp != null){
+                        profile.setImageBitmap(bmp);
+                    }else {
+                        profile.setImageResource(R.drawable.ic_person);
                     }
 
+                }catch (Exception e){
+                    e.printStackTrace();
+                    profile.setImageResource(R.drawable.ic_person);
                 }
             }
 
             @Override
-            public void onFailure(Call<UserData> call, Throwable t) {
-
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    t.printStackTrace();
+                    profile.setImageResource(R.drawable.ic_person);
             }
         });
     }
+
 }
