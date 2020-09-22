@@ -1,6 +1,7 @@
 package com.indiaactive.vehicle.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,21 +12,24 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou;
 import com.indiaactive.vehicle.R;
 import com.indiaactive.vehicle.datamodels.VehicleData;
+import com.indiaactive.vehicle.datamodels.VehicleType;
 import com.indiaactive.vehicle.ui.home.HomeFragment;
 
 import java.util.List;
 
 public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleViewModel> {
-    List<VehicleData> mList;
+    List<VehicleType> mList;
     Context mContext;
     HomeFragment mFragment;
-
-    public VehicleAdapter(List<VehicleData> mList, Context mContext, HomeFragment mFragment) {
+    String url;
+    public VehicleAdapter(List<VehicleType> mList, Context mContext, HomeFragment mFragment,String url) {
         this.mList = mList;
         this.mContext = mContext;
         this.mFragment = mFragment;
+        this.url = url;
     }
 
     @NonNull
@@ -36,11 +40,16 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
 
     @Override
     public void onBindViewHolder(@NonNull VehicleViewModel holder, int position) {
-        final VehicleData currData = mList.get(position);
-        holder.cardText.setText(currData.getVehicleName());
-        holder.cardImage.setImageResource(currData.getVehicleImage());
+        VehicleType vehicleType = mList.get(position);
+        try{
+            holder.cardText.setText(vehicleType.getVehicle_type_name());
+            GlideToVectorYou.init()
+                    .with(mContext)
+                    .setPlaceHolder(R.drawable.ic_master_loading,R.drawable.ic_no_camera)
+                    .load(Uri.parse(url),holder.cardImage);
+        }catch (Exception e){ /*eat exception */}
         holder.cardLayout.setOnClickListener(v -> {
-            mFragment.initFilterPage("TAta");
+            mFragment.initFilterPage(mList.get(position).getId());
         });
     }
 

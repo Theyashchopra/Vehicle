@@ -18,10 +18,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
@@ -48,12 +52,22 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.indiaactive.vehicle.GPS.GpsUtils;
 import com.indiaactive.vehicle.R;
+import com.indiaactive.vehicle.adapters.MasterAdapter;
+import com.indiaactive.vehicle.adapters.RestAdapter;
 import com.indiaactive.vehicle.adapters.VehicleListAdapter;
 import com.indiaactive.vehicle.adapters.VehicleAdapter;
 import com.indiaactive.vehicle.datamodels.DriverData;
+import com.indiaactive.vehicle.datamodels.MasterRoot;
+import com.indiaactive.vehicle.datamodels.MasterVehicle;
 import com.indiaactive.vehicle.datamodels.VehicleData;
+import com.indiaactive.vehicle.datamodels.VehicleModel;
+import com.indiaactive.vehicle.datamodels.VehicleModelRoot;
+import com.indiaactive.vehicle.datamodels.VehicleType;
+import com.indiaactive.vehicle.datamodels.VehicleTypeRoot;
 import com.indiaactive.vehicle.datamodels.Vehicles;
 import com.indiaactive.vehicle.dialogs.MarkerPopup;
+import com.indiaactive.vehicle.interfaces.API;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,12 +76,16 @@ import java.util.List;
 import java.util.Locale;
 import it.sephiroth.android.library.rangeseekbar.RangeSeekBar;
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import static android.content.ContentValues.TAG;
 
 public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, DatePickerDialog.OnDateSetListener {
 
     View root;
-
+    private ProgressBar homeProgress;
     //for map
     private MapView mapView;
     private GoogleMap map;
@@ -83,15 +101,15 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     private int bottomState;
     private List<Vehicles> vehiclesList;
     //For First bottom card
-    private LinearLayout bottomll;
+    private static LinearLayout bottomll;
     private RelativeLayout[] bottom1cards;
 
     //For Second bottom card
-    private List<VehicleData> vehiclelist;
-    private VehicleAdapter vehicleAdapter;
-    private RecyclerView vehicleRecycle;
-    private ImageView backIV;
-    private ConstraintLayout bottomcl;
+    private static List<VehicleType> vehiclelist;
+    private static VehicleAdapter vehicleAdapter;
+    private static RecyclerView vehicleRecycle,master_vehicle;
+    private static ImageView backIV;
+    private static ConstraintLayout bottomcl;
 
     //for Third bottom card
     private RecyclerView driverRecycle;
@@ -106,8 +124,10 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     ConstraintLayout filtercl;
     TextView filterperdayrent;
     TextView fdatefrom,fdateto;
+    Spinner filter_spinner;
     boolean flastclickeddate;
-
+    //general
+    private ProgressBar progressBar;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -115,7 +135,10 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         bottomState = 0;
 
         mapView = root.findViewById(R.id.mapfragment);
+        progressBar = root.findViewById(R.id.main_progress);
+        master_vehicle = root.findViewById(R.id.master_vehicle);
         pin = root.findViewById(R.id.pin);
+        filter_spinner = root.findViewById(R.id.filtermodelspinner);
         searchView = root.findViewById(R.id.homesearch);
         isGPS = false;
         vehicleRecycle = root.findViewById(R.id.homerecycle2);
@@ -123,6 +146,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         bottomll = root.findViewById(R.id.bottom_ll);
         bottomcl = root.findViewById(R.id.bottom_cl1);
         bottom1cards = new RelativeLayout[3];
+        homeProgress = root.findViewById(R.id.home_progress);
         /*bottom1cards[0] = root.findViewById(R.id.homerl1);
         bottom1cards[1] = root.findViewById(R.id.homerl2);
         bottom1cards[2] = root.findViewById(R.id.homerl3);*/
@@ -136,6 +160,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         slideDown = AnimationUtils.loadAnimation(getContext(),R.anim.slide_down);
         slideUp = AnimationUtils.loadAnimation(getContext(),R.anim.slide_up);
         vehiclesList = new ArrayList<>();
+        vehiclelist = new ArrayList<>();
 
         mapView.onCreate(savedInstanceState);
         getLocationPermission();
@@ -205,54 +230,70 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     * Bottom cards related
     */
     private void initFirstBottom(){
-        /*bottom1cards[0].setOnClickListener(v -> {initSecondBottom(1);});
-        bottom1cards[1].setOnClickListener(v -> {initSecondBottom(2);});
-        bottom1cards[2].setOnClickListener(v -> {initSecondBottom(3);});
-        bottomState = 0;*/
+        progressBar.setVisibility(View.VISIBLE);
+        API api = RestAdapter.createAPI();
+        Call<MasterRoot> call = api.getMaster();
+        call.enqueue(new Callback<MasterRoot>() {
+            @Override
+            public void onResponse(Call<MasterRoot> call, Response<MasterRoot> response) {
+                if (response.isSuccessful()){
+                    MasterRoot masterRoot = response.body();
+                    master_vehicle.setHasFixedSize(true);
+                    master_vehicle.setAdapter(new MasterAdapter(masterRoot.getMasters(),getContext(),HomeFragment.this));
+                    master_vehicle.scheduleLayoutAnimation();
+                    progressBar.setVisibility(View.INVISIBLE);
+                }else{
+                    Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MasterRoot> call, Throwable t) {
+                Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
         
     }
-    private void initSecondBottom(int clicked){
-        bottomState = 1;
-        backIV.setOnClickListener(v -> {
-            bottomcl.setVisibility(View.GONE);
-            bottomll.setVisibility(View.VISIBLE);
-            bottomState = 0;
+    public void initSecondBottom(int clicked,String url){
+        vehiclelist.clear();
+        progressBar.setVisibility(View.VISIBLE);
+        backIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomll.setVisibility(View.VISIBLE);
+                bottomcl.setVisibility(View.GONE);
+            }
         });
-        vehiclelist = new ArrayList<>();
-        switch (clicked){
-            case 1:
-                vehiclelist.clear();
-                vehiclelist.add(new VehicleData(R.drawable.ic_excavator,"TATA"));
-                vehiclelist.add(new VehicleData(R.drawable.ic_excavator,"TATA"));
-                vehiclelist.add(new VehicleData(R.drawable.ic_excavator,"TATA"));
-                vehiclelist.add(new VehicleData(R.drawable.ic_excavator,"TATA"));
-                vehicleAdapter = new VehicleAdapter(vehiclelist, getContext(), HomeFragment.this);
-                break;
-            case 2:
-                vehiclelist.clear();
-                vehiclelist.add(new VehicleData(R.drawable.ic_truck,"TATA"));
-                vehiclelist.add(new VehicleData(R.drawable.ic_truck,"TATA"));
-                vehiclelist.add(new VehicleData(R.drawable.ic_truck,"TATA"));
-                vehiclelist.add(new VehicleData(R.drawable.ic_truck,"TATA"));
-                vehiclelist.add(new VehicleData(R.drawable.ic_truck,"TATA"));
-                vehiclelist.add(new VehicleData(R.drawable.ic_truck,"TATA"));
-                vehicleAdapter = new VehicleAdapter(vehiclelist, getContext(), HomeFragment.this);
-                break;
-            case 3:
-                vehiclelist.clear();
-                vehiclelist.add(new VehicleData(R.drawable.ic_mini_truck,"TATA"));
-                vehiclelist.add(new VehicleData(R.drawable.ic_mini_truck,"TATA"));
-                vehicleAdapter = new VehicleAdapter(vehiclelist, getContext(), HomeFragment.this);
-                break;
-            default:
-                Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
-        }
-        vehicleRecycle.setAdapter(vehicleAdapter);
-        vehicleRecycle.scheduleLayoutAnimation();
+        API api = RestAdapter.createAPI();
+        Call<VehicleTypeRoot> call = api.getVtypes(clicked);
+        call.enqueue(new Callback<VehicleTypeRoot>() {
+            @Override
+            public void onResponse(Call<VehicleTypeRoot> call, Response<VehicleTypeRoot> response) {
+                if(response.isSuccessful()){
+                    VehicleTypeRoot vehicleTypeRoot = response.body();
+                    vehiclelist = vehicleTypeRoot.getMasters();
+                    vehicleRecycle.setAdapter(new VehicleAdapter(vehiclelist,getContext(),HomeFragment.this,url));
+                    vehicleRecycle.scheduleLayoutAnimation();
+                    progressBar.setVisibility(View.INVISIBLE);
+                }else{
+                    Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<VehicleTypeRoot> call, Throwable t) {
+                Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
         bottomll.setVisibility(View.GONE);
         bottomcl.setVisibility(View.VISIBLE);
     }
-    public void initFilterPage(String type){
+    public void initFilterPage(int id){
+        getModelsfromApi(id);
         bottomState = 2;
         String currentDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         fdatefrom.setText(currentDate);
@@ -269,7 +310,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             addMarkersOnMap();
             root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
         });
-//        filterrangeseekbar.setMinMaxStepSize(100);
+        //filterrangeseekbar.setMinMaxStepSize(100);
         filterrangeseekbar.setStepSize(1000);
         filterrangeseekbar.setMax(10000);
         fdateto.setOnClickListener(v -> {
@@ -396,7 +437,6 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                 rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
                 rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
                 rlp.setMargins(0, 300, 180, 0);
-
                 //map.setMyLocationEnabled(true);
                 map.getUiSettings().setMyLocationButtonEnabled(true);
             }
@@ -587,5 +627,37 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                 Toast.makeText(getContext(), "Starting date is after the ending date", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void getModelsfromApi(int id){
+        homeProgress.setVisibility(View.VISIBLE);
+        API api = RestAdapter.createAPI();
+        Call<VehicleModelRoot> call = api.getVModels(id);
+        List<String> spinnerList = new ArrayList<>();
+        call.enqueue(new Callback<VehicleModelRoot>() {
+            @Override
+            public void onResponse(Call<VehicleModelRoot> call, Response<VehicleModelRoot> response) {
+                if(response.isSuccessful()){
+                    VehicleModelRoot vehicleModelRoot = response.body();
+                    if(vehicleModelRoot != null){
+                        for(VehicleModel v : vehicleModelRoot.getModels()){
+                            spinnerList.add(v.getModel_name());
+                        }
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_dropdown_item,spinnerList);
+                        filter_spinner.setAdapter(adapter);
+                        homeProgress.setVisibility(View.INVISIBLE);
+                    }
+                }else{
+                    Toast.makeText(getContext(), "Check your internet connection", Toast.LENGTH_SHORT).show();
+                    homeProgress.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<VehicleModelRoot> call, Throwable t) {
+                Toast.makeText(getContext(), "Check your internet connection", Toast.LENGTH_SHORT).show();
+                homeProgress.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 }

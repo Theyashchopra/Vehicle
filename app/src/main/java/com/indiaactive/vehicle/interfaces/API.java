@@ -2,7 +2,11 @@ package com.indiaactive.vehicle.interfaces;
 
 import androidx.annotation.Nullable;
 
+import com.indiaactive.vehicle.datamodels.MasterRoot;
+import com.indiaactive.vehicle.datamodels.MasterVehicle;
 import com.indiaactive.vehicle.datamodels.UserData;
+import com.indiaactive.vehicle.datamodels.VehicleModelRoot;
+import com.indiaactive.vehicle.datamodels.VehicleTypeRoot;
 
 import java.io.File;
 import java.util.HashMap;
@@ -36,15 +40,15 @@ public interface API {
 
     @Multipart
     @POST("user")
-    Call<UserData> registerUserWithoutImage(@Part("name") RequestBody name,
-                                            @Part("email")RequestBody email, @Part("password")RequestBody password,
-                                            @Part("mobile")RequestBody mobile, @Nullable @Part MultipartBody.Part image);
+    Call<UserData> registerGoogleUser(@Part("name") RequestBody name,
+                                            @Part("email")RequestBody email, @Part("mobile")RequestBody mobile,
+                                            @Part MultipartBody.Part image);
 
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @POST("user")
     Call<UserData> registerGoogleUser(@Field("name") String name,@Field("email")String email,
                                       @Field("mobile")String mobile,@Field("google_id")String google_id,
-                                      @Field("google_image")String image);
+                                      @Field("google_image")String image);*/
 
     @GET("user")
     Call<ResponseBody> getImage(@Query("image")int id);
@@ -52,5 +56,12 @@ public interface API {
     @GET("user")
     Call<UserData> getGoogleUser(@Query("google") String google);
 
+    @GET("vmaster")
+    Call<MasterRoot> getMaster();
 
+    @GET("vtype")
+    Call<VehicleTypeRoot> getVtypes(@Query("master_id")int id);
+
+    @GET("vmodel")
+    Call<VehicleModelRoot> getVModels(@Query("vehicle_type_id") int id);
 }
