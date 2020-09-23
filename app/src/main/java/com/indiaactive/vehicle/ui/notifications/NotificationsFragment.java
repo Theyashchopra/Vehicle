@@ -7,9 +7,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -61,12 +63,14 @@ public class NotificationsFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        clickListener();
         return root;
     }
 
     private void initialise(){
         sharedPreferences = this.getActivity().getSharedPreferences("login", Context.MODE_PRIVATE);
         editbt = root.findViewById(R.id.edit);
+        editbt.setEnabled(true);
         donebt = root.findViewById(R.id.done);
         logoutbt = root.findViewById(R.id.logout);
         logoutPopup = new LogoutPopup();
@@ -124,7 +128,7 @@ public class NotificationsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<UserData> call, Throwable t) {
-
+                Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -185,5 +189,72 @@ public class NotificationsFragment extends Fragment {
             }
         });
     }
+    private void clickListener(){
+        editbt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                name.setEnabled(!name.isEnabled());
+                mobile.setEnabled(!mobile.isEnabled());
+                if(name.isEnabled()) {
+                    name.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(name, InputMethodManager.SHOW_IMPLICIT);
+                    donebt.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
+        donebt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    EditProfile(name.getText().toString().trim(),mobile.getText().toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    private void EditProfile(String name1,String mobile1) throws Exception {
+        if(id == 0){
+            return;
+        }
+        API api = RestAdapter.createAPI();
+        Call<UserData> call = api.updateNameandMobile(id,name1,mobile1);
+        call.enqueue(new Callback<UserData>() {
+            @Override
+            public void onResponse(Call<UserData> call, Response<UserData> response) {
+                if(response.isSuccessful()){
+                    UserData userData = response.body();
+                    if(userData.getEmail() != null){
+                        Toast.makeText(getContext(), "Profile Updated", Toast.LENGTH_SHORT).show();
+                        donebt.setVisibility(View.GONE);
+                        editbt.setEnabled(false);
+                        name.setEnabled(false);
+                        mobile.setEnabled(false);
+                    }else{
+                        Toast.makeText(getContext(), userData.getMessage(), Toast.LENGTH_SHORT).show();
+                        donebt.setVisibility(View.GONE);
+                        editbt.setEnabled(false);
+                        name.setEnabled(false);
+                        mobile.setEnabled(false);
+                    }
+                }else{
+                    donebt.setVisibility(View.GONE);
+                    editbt.setEnabled(false);
+                    name.setEnabled(false);
+                    mobile.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserData> call, Throwable t) {
+                donebt.setVisibility(View.GONE);
+                editbt.setEnabled(false);
+                name.setEnabled(false);
+                mobile.setEnabled(false);
+            }
+        });
+        getData();
+    }
 }

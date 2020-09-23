@@ -21,6 +21,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 
@@ -42,6 +43,8 @@ public interface API {
     @POST("user")
     Call<UserData> registerGoogleUser(@Part("name") RequestBody name,
                                             @Part("email")RequestBody email, @Part("mobile")RequestBody mobile,
+                                            @Part("google_id") RequestBody google_id,
+                                            @Part("google_image") RequestBody google_image,
                                             @Part MultipartBody.Part image);
 
     /*@FormUrlEncoded
@@ -64,4 +67,7 @@ public interface API {
 
     @GET("vmodel")
     Call<VehicleModelRoot> getVModels(@Query("vehicle_type_id") int id);
+
+    @PUT("user")
+    Call<UserData> updateNameandMobile(@Query("id")int id,@Query("name") String name,@Query("mobile")String mobile);
 }

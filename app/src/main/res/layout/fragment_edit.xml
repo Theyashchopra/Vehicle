@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#F5F5F5"
+    tools:context=".ui.notifications.EditFragment">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#f5f5f5">
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cool_card"
+        android:layout_width="match_parent"
+        app:cardBackgroundColor="#FFF"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="5dp"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/ic_person"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/edit_image"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nametf"
+                android:layout_width="match_parent"
+                android:layout_below="@id/edit_image"
+                android:layout_height="wrap_content"
+                android:hint="Name"
+                android:layout_margin="8dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nameEf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000"
+                    android:inputType="textPersonName"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/mobiletf"
+                android:layout_width="match_parent"
+                android:layout_below="@id/nametf"
+                android:layout_height="wrap_content"
+                android:hint="Mobile Number"
+                android:layout_margin="8dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/mobileEf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000"
+                    android:inputType="textPersonName"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cool_card"
+        app:cornerRadius="8dp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:text="Save"
+        android:id="@+id/save"/>
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/save"
+        app:cornerRadius="8dp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:text="Save Image"
+        android:id="@+id/saveImage"/>
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/saveImage"
+        app:cornerRadius="8dp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:text="Change Password"
+        android:id="@+id/changePassword"/>
+</RelativeLayout>
+</ScrollView>

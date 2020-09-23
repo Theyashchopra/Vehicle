@@ -92,4 +92,8 @@ public class UserData {
     public String getImage_url() {
         return image_url;
     }
+
+    public String getPassword() {
+        return password;
+    }
 }
