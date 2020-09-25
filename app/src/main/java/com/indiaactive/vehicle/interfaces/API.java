@@ -70,4 +70,6 @@ public interface API {
 
     @PUT("user")
     Call<UserData> updateNameandMobile(@Query("id")int id,@Query("name") String name,@Query("mobile")String mobile);
+
+
 }

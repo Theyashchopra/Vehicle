@@ -351,17 +351,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         bottomState = 3;
         TextView tv = root.findViewById(R.id.typetv3);
         tv.setText(veh);
-        /*driverList = new ArrayList<>();
-        driverList.add(new DriverData("YOYO","YEAH"));
-        driverList.add(new DriverData("YOYO","YEAH"));
-        driverList.add(new DriverData("YOYO","YEAH"));
-        driverList.add(new DriverData("YOYO","YEAH"));
-        driverList.add(new DriverData("YOYO","YEAH"));
-        driverList.add(new DriverData("YOYO","YEAH"));
-        driverList.add(new DriverData("YOYO","YEAH"));
-        driverList.add(new DriverData("YOYO","YEAH"));
-        driverList.add(new DriverData("YOYO","YEAH"));
-        driverList.add(new DriverData("YOYO","YEAH"));*/
+
         createTestMarkerList();
         vehicleListAdapter = new VehicleListAdapter(vehiclesList, getContext(),this);
         driverRecycle = root.findViewById(R.id.driverrecycle);
