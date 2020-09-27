@@ -149,10 +149,10 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
             isImage = body;
         }
         //creating request body parameters to pass
-        RequestBody fullName = RequestBody.create(MediaType.parse("multipart/form-data"), naam);
-        RequestBody email_id = RequestBody.create(MediaType.parse("multipart/form-data"), mail);
-        RequestBody mobile_number = RequestBody.create(MediaType.parse("multipart/form-data"),number);
-        RequestBody password = RequestBody.create(MediaType.parse("multipart/form-data"), pass);
+        RequestBody fullName = RequestBody.create(naam,MediaType.parse("multipart/form-data"));
+        RequestBody email_id = RequestBody.create(mail, MediaType.parse("multipart/form-data"));
+        RequestBody mobile_number = RequestBody.create(number,MediaType.parse("multipart/form-data"));
+        RequestBody password = RequestBody.create(pass, MediaType.parse("multipart/form-data"));
         Call<UserData> call;
         if(isImage != null) {
             call = RestAdapter.createAPI().registerUser(fullName, email_id, password, mobile_number, isImage);
