@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.indiaactive.vehicle.datamodels.MasterRoot;
 import com.indiaactive.vehicle.datamodels.MasterVehicle;
 import com.indiaactive.vehicle.datamodels.UserData;
+import com.indiaactive.vehicle.datamodels.VehicleData;
 import com.indiaactive.vehicle.datamodels.VehicleModelRoot;
 import com.indiaactive.vehicle.datamodels.VehicleTypeRoot;
 
@@ -70,6 +71,5 @@ public interface API {
 
     @PUT("user")
     Call<UserData> updateNameandMobile(@Query("id")int id,@Query("name") String name,@Query("mobile")String mobile);
-
 
 }
