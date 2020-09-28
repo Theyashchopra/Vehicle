@@ -19,8 +19,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -57,6 +60,7 @@ import com.indiaactive.vehicle.adapters.RestAdapter;
 import com.indiaactive.vehicle.adapters.VehicleListAdapter;
 import com.indiaactive.vehicle.adapters.VehicleAdapter;
 import com.indiaactive.vehicle.datamodels.DriverData;
+import com.indiaactive.vehicle.datamodels.ListVehicles;
 import com.indiaactive.vehicle.datamodels.MasterRoot;
 import com.indiaactive.vehicle.datamodels.MasterVehicle;
 import com.indiaactive.vehicle.datamodels.VehicleData;
@@ -74,6 +78,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+
 import it.sephiroth.android.library.rangeseekbar.RangeSeekBar;
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import retrofit2.Call;
@@ -106,7 +112,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
 
     //For Second bottom card
     private static List<VehicleType> vehiclelist;
-    private static VehicleAdapter vehicleAdapter;
+    //private static VehicleAdapter vehicleAdapter;
     private static RecyclerView vehicleRecycle,master_vehicle;
     private static ImageView backIV;
     private static ConstraintLayout bottomcl;
@@ -126,8 +132,15 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     TextView fdatefrom,fdateto;
     Spinner filter_spinner;
     boolean flastclickeddate;
+    CheckBox filterCheckBox;
+    String startcost,endcost;
+    String startdate, enddate;
+    int checkNow;
+    List<String> spinnerList;
+    VehicleModelRoot vehicleModelRoot;
+    int selectedModelId;
     //general
-    private ProgressBar progressBar;
+    private ProgressBar progressBar, progressBarBottom2, progressBarBottom3,progressBarBottomList,progressBarFilter;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -159,6 +172,12 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         fdateto = root.findViewById(R.id.filtertodate);
         slideDown = AnimationUtils.loadAnimation(getContext(),R.anim.slide_down);
         slideUp = AnimationUtils.loadAnimation(getContext(),R.anim.slide_up);
+        filterCheckBox = root.findViewById(R.id.filterchecknow);
+        progressBarBottom2 = root.findViewById(R.id.progressbottom2);
+        progressBarBottom3 = root.findViewById(R.id.progressbottom3);
+        progressBarBottomList = root.findViewById(R.id.progressbottomlist);
+        progressBarFilter = root.findViewById(R.id.progressfilter);
+
         vehiclesList = new ArrayList<>();
         vehiclelist = new ArrayList<>();
 
@@ -167,7 +186,6 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         initMap();
         initFirstBottom();
         animations(bottom1cards);
-        createTestMarkerList();
         new GpsUtils(getContext()).turnGPSOn(isGPSEnable -> isGPS = isGPSEnable);
         return root;
     }
@@ -189,7 +207,6 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                     a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(a);
                 }*/
-
                 switch(bottomState){
                     case 1:
                         bottomcl.setVisibility(View.GONE);
@@ -258,7 +275,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     }
     public void initSecondBottom(int clicked,String url){
         vehiclelist.clear();
-        progressBar.setVisibility(View.VISIBLE);
+        progressBarBottom2.setVisibility(View.VISIBLE);
         backIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -276,38 +293,52 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                     vehiclelist = vehicleTypeRoot.getMasters();
                     vehicleRecycle.setAdapter(new VehicleAdapter(vehiclelist,getContext(),HomeFragment.this,url));
                     vehicleRecycle.scheduleLayoutAnimation();
-                    progressBar.setVisibility(View.INVISIBLE);
+                    progressBarBottom2.setVisibility(View.INVISIBLE);
                 }else{
                     Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.INVISIBLE);
+                    progressBarBottom2.setVisibility(View.INVISIBLE);
                 }
             }
 
             @Override
             public void onFailure(Call<VehicleTypeRoot> call, Throwable t) {
                 Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.INVISIBLE);
+                progressBarBottom2.setVisibility(View.INVISIBLE);
             }
         });
         bottomll.setVisibility(View.GONE);
         bottomcl.setVisibility(View.VISIBLE);
     }
     public void initFilterPage(int id){
+        progressBarFilter.setVisibility(View.VISIBLE);
         getModelsfromApi(id);
         bottomState = 2;
         String currentDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         fdatefrom.setText(currentDate);
+        startdate = currentDate;
+        enddate = currentDate;
         fdateto.setText(currentDate);
+        checkNow = 0;
+        filterCheckBox.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b){
+              checkNow = 1;
+            }
+            else {
+                checkNow = 0;
+            }
+        });
         fbackiv.setOnClickListener(v -> {
             root.findViewById(R.id.filtercl).setVisibility(View.GONE);
             bottomcl.setVisibility(View.VISIBLE);
             root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
             map.clear();
             bottomState = 1;
+            progressBarFilter.setVisibility(View.GONE);
         });
         filtersearchbutton.setOnClickListener(v -> {
             initThirdBottom("Tata");
-            addMarkersOnMap();
+            createMarkerList();
+            progressBarFilter.setVisibility(View.GONE);
             root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
         });
         //filterrangeseekbar.setMinMaxStepSize(100);
@@ -326,9 +357,29 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             dialog.show();
         });
 
+        filter_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String text =(String) adapterView.getItemAtPosition(i);
+                List<VehicleModel> list = vehicleModelRoot.getModels();
+                for(VehicleModel vm : list){
+                    if(Objects.equals(vm.getModel_name(), text)){
+                        selectedModelId = vm.getId();
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         filterrangeseekbar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener() {
             @Override
             public void onProgressChanged(RangeSeekBar rangeSeekBar, int i, int i1, boolean b) {
+                startcost = Integer.toString(i);
+                endcost = Integer.toString(i1);
                 filterperdayrent.setText("Rs"+i+" - "+"Rs"+i1);
             }
 
@@ -345,14 +396,15 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         filtercl.setVisibility(View.VISIBLE);
         bottomcl.setVisibility(View.GONE);
         root.findViewById(R.id.pin).setVisibility(View.GONE);
+        progressBarFilter.setVisibility(View.GONE);
     }
     public void initThirdBottom(String veh){
+        progressBarBottom3.setVisibility(View.VISIBLE);
 
         bottomState = 3;
         TextView tv = root.findViewById(R.id.typetv3);
         tv.setText(veh);
 
-        createTestMarkerList();
         vehicleListAdapter = new VehicleListAdapter(vehiclesList, getContext(),this);
         driverRecycle = root.findViewById(R.id.driverrecycle);
         AlphaInAnimationAdapter alphaInAnimationAdapter = new AlphaInAnimationAdapter(vehicleListAdapter);
@@ -366,6 +418,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             bottomState = 4;
             root.startAnimation(slideUp);
             new Handler().postDelayed(() -> {
+                progressBarBottomList.setVisibility(View.GONE);
                 pin.setVisibility(View.INVISIBLE);
                 root.findViewById(R.id.driverlistrl).setVisibility(View.VISIBLE);
                 root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
@@ -379,6 +432,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             root.findViewById(R.id.bottom_rl3).setVisibility(View.VISIBLE);
         });
         root.findViewById(R.id.backimage3).setOnClickListener(v -> {
+            progressBarBottom3.setVisibility(View.GONE);
             bottomState = 2;
             root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
             root.findViewById(R.id.filtercl).setVisibility(View.VISIBLE);
@@ -388,6 +442,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         bottomll.setVisibility(View.GONE);
         root.findViewById(R.id.filtercl).setVisibility(View.GONE);
         root.findViewById(R.id.bottom_rl3).setVisibility(View.VISIBLE);
+        progressBarBottom3.setVisibility(View.GONE);
     }
 
     /*
@@ -477,7 +532,6 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(TAG, "onRequestPermissionsResult: called.");
@@ -501,17 +555,15 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             }
         }
     }
-
     private void animations(RelativeLayout [] relativeLayout){
         YoYo.with(Techniques.FadeInUp)
                 .duration(2000)
                 .repeat(0)
                 .playOn(searchView);
     }
-
-    private void createTestMarkerList(){
+    private void createMarkerList(){
         vehiclesList.clear();
-        vehiclesList.add(new Vehicles("MH 31 A 1234","SBC TRAVELS","1234","15000","5000","1999",21.159369, 79.062351));
+        /*vehiclesList.add(new Vehicles("MH 31 A 1234","SBC TRAVELS","1234","15000","5000","1999",21.159369, 79.062351));
         vehiclesList.add(new Vehicles("MH 31 A 1234","ABC TRAVELS","1234","15000","5000","1999",21.167452, 79.075419));
         vehiclesList.add(new Vehicles("MH 31 A 1234","DBC TRAVELS","1234","15000","5000","1999",21.160786, 79.093762));
         vehiclesList.add(new Vehicles("MH 31 A 1234","CBC TRAVELS","1234","15000","5000","1999",21.140029, 79.085561));
@@ -530,17 +582,34 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         vehiclesList.add(new Vehicles("MH 31 A 1234","UBC TRAVELS","1234","15000","5000","1999",20.754030, 78.580616));
         vehiclesList.add(new Vehicles("MH 31 A 1234","IBC TRAVELS","1234","15000","5000","1999",20.735726, 78.630914));
         vehiclesList.add(new Vehicles("MH 31 A 1234","OBC TRAVELS","1234","15000","5000","1999",20.766843, 78.598762));
-        vehiclesList.add(new Vehicles("MH 31 A 1234","PBC TRAVELS","1234","15000","5000","1999",20.713900, 78.605072));
-    }
+        vehiclesList.add(new Vehicles("MH 31 A 1234","PBC TRAVELS","1234","15000","5000","1999",20.713900, 78.605072));*/
+        Call<ListVehicles> call = RestAdapter.createAPI().getVehicleList(selectedModelId, checkNow, startdate, enddate, startcost,endcost);
+        call.enqueue(new Callback<ListVehicles>() {
+            @Override
+            public void onResponse(Call<ListVehicles> call, Response<ListVehicles> response) {
+                if(response.isSuccessful()){
+                    ListVehicles res = response.body();
+                    if(res != null){
+                        vehiclesList.addAll(res.getVehicles());
+                        addMarkersOnMap();
+                    }
+                }
+            }
 
+            @Override
+            public void onFailure(Call<ListVehicles> call, Throwable t) {
+                Log.e("GET List", t.getMessage());
+            }
+        });
+
+    }
     @Override
     public boolean onMarkerClick(Marker marker) {
         Log.i("CLICK","MARKER");
         final Marker marker1 = marker;
-        createTestMarkerList();
         for(Vehicles v : vehiclesList){
-            Log.i(TAG, "onMarkerClick: "+v.getLatitude());
-            if(((Double)v.getLatitude()).equals(marker1.getPosition().latitude) && ((Double)v.getLongitude()).equals(marker1.getPosition().longitude) ){
+            Log.i(TAG, "onMarkerClick: "+v.getLat());
+            if(((Double)v.getLat()).equals(marker1.getPosition().latitude) && ((Double)v.getLon()).equals(marker1.getPosition().longitude) ){
                 MarkerPopup mk = new MarkerPopup();
                 Bundle args = new Bundle();
                 Log.i(TAG, "onMarkerClick: "+v.getName());
@@ -558,12 +627,22 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         return true;
     }
     public void addMarkersOnMap(){
-        for(Vehicles vehicles : vehiclesList){
-            LatLng latLng = new LatLng(vehicles.getLatitude(),vehicles.getLongitude());
+        for(Vehicles vehicle : vehiclesList){
+            try {
+                LatLng latLng = new LatLng(vehicle.getLat(),vehicle.getLon());
+                MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("Truck").icon(bitmapDescriptorFromVector(getContext(),R.drawable.ic_car_top_view));
+                map.addMarker(markerOptions);
+                Log.e("Marker Position", vehicle.getLat()+" ," +vehicle.getLon());
+                //map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(21.146002, 79.089984),13));
+            }
+            catch (Exception e){
+                Log.e("Exception ",e.getMessage());
+            }
+            /*LatLng latLng = new LatLng(vehicles.getLatitude(),vehicles.getLongitude());
             MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("Truck").icon(bitmapDescriptorFromVector(getContext(),R.drawable.ic_car_top_view));
             map.addMarker(markerOptions);
             //map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(21.146002, 79.089984),13));
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(21.146002, 79.089984),13));
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(21.146002, 79.089984),13));*/
         }
     }
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorId){
@@ -605,13 +684,16 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         if (flastclickeddate){
             String df = dayOfMonth+"/"+month+"/"+year;
             fdatefrom.setText(df);
+            startdate = df;
             if (dayOfMonth >= Integer.parseInt(fdateto.getText().subSequence(0,2).toString())){
                 fdateto.setText(df);
+                enddate = df;
             }
         }
         else{
             if (Integer.parseInt(fdatefrom.getText().subSequence(0,2).toString()) <= dayOfMonth){
                 fdateto.setText(dayOfMonth+"/"+month+"/"+year);
+                enddate = dayOfMonth+"/"+month+"/"+year;
             }
             else {
                 Toast.makeText(getContext(), "Starting date is after the ending date", Toast.LENGTH_SHORT).show();
@@ -620,33 +702,33 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     }
 
     private void getModelsfromApi(int id){
-        homeProgress.setVisibility(View.VISIBLE);
+        progressBarFilter.setVisibility(View.VISIBLE);
         API api = RestAdapter.createAPI();
         Call<VehicleModelRoot> call = api.getVModels(id);
-        List<String> spinnerList = new ArrayList<>();
+        spinnerList = new ArrayList<>();
         call.enqueue(new Callback<VehicleModelRoot>() {
             @Override
             public void onResponse(Call<VehicleModelRoot> call, Response<VehicleModelRoot> response) {
                 if(response.isSuccessful()){
-                    VehicleModelRoot vehicleModelRoot = response.body();
+                    vehicleModelRoot = response.body();
                     if(vehicleModelRoot != null){
                         for(VehicleModel v : vehicleModelRoot.getModels()){
                             spinnerList.add(v.getModel_name());
                         }
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_dropdown_item,spinnerList);
                         filter_spinner.setAdapter(adapter);
-                        homeProgress.setVisibility(View.INVISIBLE);
+                        progressBarFilter.setVisibility(View.INVISIBLE);
                     }
                 }else{
                     Toast.makeText(getContext(), "Check your internet connection", Toast.LENGTH_SHORT).show();
-                    homeProgress.setVisibility(View.INVISIBLE);
+                    progressBarFilter.setVisibility(View.INVISIBLE);
                 }
             }
 
             @Override
             public void onFailure(Call<VehicleModelRoot> call, Throwable t) {
                 Toast.makeText(getContext(), "Check your internet connection", Toast.LENGTH_SHORT).show();
-                homeProgress.setVisibility(View.INVISIBLE);
+                progressBarFilter.setVisibility(View.INVISIBLE);
             }
         });
     }

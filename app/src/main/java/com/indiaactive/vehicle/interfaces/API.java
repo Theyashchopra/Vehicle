@@ -2,6 +2,7 @@ package com.indiaactive.vehicle.interfaces;
 
 import androidx.annotation.Nullable;
 
+import com.indiaactive.vehicle.datamodels.ListVehicles;
 import com.indiaactive.vehicle.datamodels.MasterRoot;
 import com.indiaactive.vehicle.datamodels.MasterVehicle;
 import com.indiaactive.vehicle.datamodels.UserData;
@@ -67,5 +68,9 @@ public interface API {
 
     @PUT("user")
     Call<UserData> updateNameandMobile(@Query("id")int id,@Query("name") String name,@Query("mobile")String mobile);
+
+    @GET("search")
+    Call<ListVehicles> getVehicleList(@Query("model_id") int model_id, @Query("availibility") int availability, @Query("start_date") String start_date, @Query("end_date") String end_date, @Query("price_start") String price_Start, @Query("price_end") String price_end);
+
 
 }

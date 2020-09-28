@@ -228,16 +228,13 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
     }
 
     private void clickListeners(){
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle ags=new Bundle();
-                ags.putInt("curr",1);
-                dgi = new Dialog_Get_ImageActivity();
-                dgi.setArguments(ags);
-                dgi.show(getSupportFragmentManager(),"Dialog_select_Image");
-                Log.e("Image Adder","----"+1);
-            }
+        imageView.setOnClickListener(view -> {
+            Bundle ags=new Bundle();
+            ags.putInt("curr",1);
+            dgi = new Dialog_Get_ImageActivity();
+            dgi.setArguments(ags);
+            dgi.show(getSupportFragmentManager(),"Dialog_select_Image");
+            Log.e("Image Adder","----"+1);
         });
 
     }
