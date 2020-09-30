@@ -1,6 +1,5 @@
 package com.indiaactive.vehicle.ui.home;
 
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -23,12 +22,10 @@ public class ViewDetailsFragment extends Fragment {
     RequestPopup rpop;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_view_details, container, false);
         requestbt = root.findViewById(R.id.requestbt);
         backbutton = root.findViewById(R.id.viewback);
         rpop = new RequestPopup();
-
         requestbt.setOnClickListener(v -> {
             rpop.show(requireActivity().getSupportFragmentManager(),"request");
         });

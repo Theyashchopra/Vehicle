@@ -19,12 +19,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -63,8 +60,6 @@ import com.indiaactive.vehicle.adapters.VehicleAdapter;
 import com.indiaactive.vehicle.datamodels.DriverData;
 import com.indiaactive.vehicle.datamodels.ListVehicles;
 import com.indiaactive.vehicle.datamodels.MasterRoot;
-import com.indiaactive.vehicle.datamodels.MasterVehicle;
-import com.indiaactive.vehicle.datamodels.VehicleData;
 import com.indiaactive.vehicle.datamodels.VehicleModel;
 import com.indiaactive.vehicle.datamodels.VehicleModelRoot;
 import com.indiaactive.vehicle.datamodels.VehicleType;
@@ -215,17 +210,17 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                         bottomState = 0;
                         break;
                     case 2:
-                        root.findViewById(R.id.filtercl).setVisibility(View.GONE);
+                        /*root.findViewById(R.id.filtercl).setVisibility(View.GONE);
                         bottomcl.setVisibility(View.VISIBLE);
                         root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
-                        map.clear();
-                        bottomState = 1;
+                        bottomState = 1;*/
                         break;
                     case 3:
-                        bottomState = 2;
+                        bottomState = 1;
                         root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
-                        root.findViewById(R.id.filtercl).setVisibility(View.VISIBLE);
-                        root.findViewById(R.id.pin).setVisibility(View.GONE);
+                        bottomcl.setVisibility(View.VISIBLE);
+                        map.clear();
+                        root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
                         break;
                     case 4:
                         bottomState = 3;
@@ -278,13 +273,11 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     public void initSecondBottom(int clicked,String url){
         //getting vehicle types(subcategory from here)
         vehiclelist.clear();
+        bottomState = 1;
         progressBarBottom2.setVisibility(View.VISIBLE);
-        backIV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bottomll.setVisibility(View.VISIBLE);
-                bottomcl.setVisibility(View.GONE);
-            }
+        backIV.setOnClickListener(view -> {
+            bottomll.setVisibility(View.VISIBLE);
+            bottomcl.setVisibility(View.GONE);
         });
         API api = RestAdapter.createAPI();
         Call<VehicleTypeRoot> call = api.getVtypes(clicked);
@@ -442,10 +435,11 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         });
         root.findViewById(R.id.backimage3).setOnClickListener(v -> {
             progressBarBottom3.setVisibility(View.GONE);
-            bottomState = 2;
-            //root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
-            //root.findViewById(R.id.filtercl).setVisibility(View.VISIBLE);
-            //root.findViewById(R.id.pin).setVisibility(View.GONE);
+            bottomState = 1;
+            root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
+            bottomcl.setVisibility(View.VISIBLE);
+            map.clear();
+            root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
 
         });
        bottomll.setVisibility(View.GONE);
@@ -694,6 +688,4 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             }
         }
     }
-
-
 }
