@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou;
 import com.indiaactive.vehicle.R;
 import com.indiaactive.vehicle.datamodels.VehicleData;
 import com.indiaactive.vehicle.datamodels.VehicleType;
+import com.indiaactive.vehicle.dialogs.FilterPopup;
 import com.indiaactive.vehicle.ui.home.HomeFragment;
 
 import java.util.List;
@@ -49,7 +51,12 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
                     .load(Uri.parse(url),holder.cardImage);
         }catch (Exception e){ /*eat exception */}
         holder.cardLayout.setOnClickListener(v -> {
-            mFragment.initFilterPage(mList.get(position).getId());
+            try {
+                //mFragment.initFilterPage(mList.get(position).getId());
+                FilterPopup fp = new FilterPopup(mFragment,mList.get(position).getId());
+                AppCompatActivity activity = (AppCompatActivity) mContext;
+                fp.show(activity.getSupportFragmentManager(),"filter");
+            }catch (Exception e) { }
         });
     }
 

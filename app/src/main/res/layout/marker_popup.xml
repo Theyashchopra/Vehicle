@@ -114,8 +114,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="VIEW INFO"
-        android:textColor="@android:color/holo_orange_dark"
-        android:background="@drawable/circular_white_border"
+        android:textColor="#fff"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:layout_below="@+id/rph"/>

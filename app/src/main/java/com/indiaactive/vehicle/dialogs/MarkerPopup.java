@@ -26,16 +26,20 @@ public class MarkerPopup extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.marker_popup, container, false);
+
         Bundle args = getArguments();
+
         vName = args.getString("name");
         madeIn = args.getString("madein");
         kmscompleted = args.getString("kms");
         rentPerDay = args.getString("rentperday");
         rentPerHour = args.getString("rentperHour");
         plate = args.getString("number");
+
         Dialog dialog = getDialog();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
         name = view.findViewById(R.id.company_name);
         madeintv = view.findViewById(R.id.made);
         rpDaytv = view.findViewById(R.id.rentperday);

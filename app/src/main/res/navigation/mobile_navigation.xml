@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_navigation_home_to_viewDetailsFragment"
-            app:destination="@id/viewDetailsFragment" />
+            app:destination="@id/viewDetailsFragment"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"/>
     </fragment>
 
 <!--    <fragment
@@ -35,6 +39,10 @@
             android:id="@+id/action_viewDetailsFragment_to_navigation_home"
             app:destination="@id/navigation_home"
             app:popUpToInclusive="true"
-            app:popUpTo="@id/navigation_home"/>
+            app:popUpTo="@id/navigation_home"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"/>
     </fragment>
 </navigation>

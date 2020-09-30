@@ -3,85 +3,148 @@ package com.indiaactive.vehicle.datamodels;
 import com.google.gson.annotations.SerializedName;
 
 public class Vehicles {
-
-    private String name, kms, rentPerDay, rentPerHour, year, plateNumber;
-    private double lat;
+    public int v_id;
+    public String name;
+    public String added_on;
+    public String modified_on;
+    public int vehicle_model_id;
+    public String model_name;
+    public String year_of_man;
+    public int total_run_hrs;
+    public int run_km_hr;
+    public int fuel_consumption;
+    public int average_fuel_consumption;
+    public int rent_per_day_with_fuel;
+    public int rent_per_hour_with_fuel;
+    public int rent_per_hour_without_fuel;
+    public int rent_per_day_without_fuel;
+    public int owner_id;
+    public String owner_name;
+    public String owner_mobile;
+    public boolean availibility;
+    public int driver_id;
+    public double lat;
     @SerializedName("long")
-    private double lon;
+    public double lon;
+    public float rotation;
+    public String plate_no;
+    public String busy_start;
+    public String busy_end;
+    public boolean isDocument;
+    public boolean isImage;
 
-    public Vehicles(String name, String kms, String rentPerDay, String rentPerHour, String year, String plateNumber, double lat, double lon) {
-        this.name = name;
-        this.kms = kms;
-        this.rentPerDay = rentPerDay;
-        this.rentPerHour = rentPerHour;
-        this.year = year;
-        this.plateNumber = plateNumber;
-        this.lat = lat;
-        this.lon = lon;
+    public Vehicles(){}
+
+    public int getV_id() {
+        return v_id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getAdded_on() {
+        return added_on;
     }
 
-    public String getKms() {
-        return kms;
+    public String getModified_on() {
+        return modified_on;
     }
 
-    public void setKms(String kms) {
-        this.kms = kms;
+    public int getVehicle_model_id() {
+        return vehicle_model_id;
     }
 
-    public String getRentPerDay() {
-        return rentPerDay;
+    public String getModel_name() {
+        return model_name;
     }
 
-    public void setRentPerDay(String rentPerDay) {
-        this.rentPerDay = rentPerDay;
+    public String getYear_of_man() {
+        return year_of_man;
     }
 
-    public String getRentPerHour() {
-        return rentPerHour;
+    public int getTotal_run_hrs() {
+        return total_run_hrs;
     }
 
-    public void setRentPerHour(String rentPerHour) {
-        this.rentPerHour = rentPerHour;
+    public int getRun_km_hr() {
+        return run_km_hr;
     }
 
-    public String getYear() {
-        return year;
+    public int getFuel_consumption() {
+        return fuel_consumption;
     }
 
-    public void setYear(String year) {
-        this.year = year;
+    public int getAverage_fuel_consumption() {
+        return average_fuel_consumption;
     }
 
-    public String getPlateNumber() {
-        return plateNumber;
+    public int getRent_per_day_with_fuel() {
+        return rent_per_day_with_fuel;
     }
 
-    public void setPlateNumber(String plateNumber) {
-        this.plateNumber = plateNumber;
+    public int getRent_per_hour_with_fuel() {
+        return rent_per_hour_with_fuel;
+    }
+
+    public int getRent_per_hour_without_fuel() {
+        return rent_per_hour_without_fuel;
+    }
+
+    public int getRent_per_day_without_fuel() {
+        return rent_per_day_without_fuel;
+    }
+
+    public int getOwner_id() {
+        return owner_id;
+    }
+
+    public String getOwner_name() {
+        return owner_name;
+    }
+
+    public String getOwner_mobile() {
+        return owner_mobile;
+    }
+
+    public boolean isAvailibility() {
+        return availibility;
+    }
+
+    public int getDriver_id() {
+        return driver_id;
     }
 
     public double getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
     public double getLon() {
         return lon;
     }
 
-    public void setLon(double lon) {
-        this.lon = lon;
+    public float getRotation() {
+        return rotation;
+    }
+
+    public String getPlate_no() {
+        return plate_no;
+    }
+
+    public String getBusy_start() {
+        return busy_start;
+    }
+
+    public String getBusy_end() {
+        return busy_end;
+    }
+
+    public boolean isDocument() {
+        return isDocument;
+    }
+
+    public boolean isImage() {
+        return isImage;
     }
 }
 

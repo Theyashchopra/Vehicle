@@ -39,7 +39,7 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
     public void onBindViewHolder(@NonNull DriverViewHolder holder, int position) {
         Vehicles curr = mList.get(position);
         holder.oname.setText(curr.getName());
-        holder.dname.setText(curr.getPlateNumber());
+        holder.dname.setText(curr.getPlate_no());
         holder.cardcl.setOnClickListener(v ->{
             Navigation.findNavController(mFragment.getActivity(),R.id.nav_host_fragment)
                     .navigate(R.id.action_navigation_home_to_viewDetailsFragment);
