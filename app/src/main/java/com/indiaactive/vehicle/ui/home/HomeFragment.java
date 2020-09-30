@@ -56,7 +56,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.indiaactive.vehicle.GPS.GpsUtils;
 import com.indiaactive.vehicle.R;
-import com.indiaactive.vehicle.activities.MainActivity;
 import com.indiaactive.vehicle.adapters.MasterAdapter;
 import com.indiaactive.vehicle.adapters.RestAdapter;
 import com.indiaactive.vehicle.adapters.VehicleListAdapter;
@@ -217,17 +216,17 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                         bottomState = 0;
                         break;
                     case 2:
-                        root.findViewById(R.id.filtercl).setVisibility(View.GONE);
+                        /*root.findViewById(R.id.filtercl).setVisibility(View.GONE);
                         bottomcl.setVisibility(View.VISIBLE);
                         root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
-                        map.clear();
-                        bottomState = 1;
+                        bottomState = 1;*/
                         break;
                     case 3:
-                        bottomState = 2;
+                        bottomState = 1;
                         root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
-                        root.findViewById(R.id.filtercl).setVisibility(View.VISIBLE);
-                        root.findViewById(R.id.pin).setVisibility(View.GONE);
+                        bottomcl.setVisibility(View.VISIBLE);
+                        map.clear();
+                        root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
                         break;
                     case 4:
                         bottomState = 3;
@@ -280,13 +279,11 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     public void initSecondBottom(int clicked,String url){
         //getting vehicle types(subcategory from here)
         vehiclelist.clear();
+        bottomState = 1;
         progressBarBottom2.setVisibility(View.VISIBLE);
-        backIV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bottomll.setVisibility(View.VISIBLE);
-                bottomcl.setVisibility(View.GONE);
-            }
+        backIV.setOnClickListener(view -> {
+            bottomll.setVisibility(View.VISIBLE);
+            bottomcl.setVisibility(View.GONE);
         });
         API api = RestAdapter.createAPI();
         Call<VehicleTypeRoot> call = api.getVtypes(clicked);
@@ -435,7 +432,6 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                 root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
             },300);
         });
-
         root.findViewById(R.id.downarrow).setOnClickListener(v -> {
             bottomState = 3;
             root.startAnimation(slideDown);
@@ -443,17 +439,16 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             root.findViewById(R.id.driverlistrl).setVisibility(View.GONE);
             root.findViewById(R.id.bottom_rl3).setVisibility(View.VISIBLE);
         });
-
         root.findViewById(R.id.backimage3).setOnClickListener(v -> {
             progressBarBottom3.setVisibility(View.GONE);
-            bottomState = 2;
-            //root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
-            //root.findViewById(R.id.filtercl).setVisibility(View.VISIBLE);
-            //root.findViewById(R.id.pin).setVisibility(View.GONE);
+            bottomState = 1;
+            root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
+            bottomcl.setVisibility(View.VISIBLE);
+            map.clear();
+            root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
 
         });
-
-        bottomll.setVisibility(View.GONE);
+       bottomll.setVisibility(View.GONE);
         root.findViewById(R.id.filtercl).setVisibility(View.GONE);
         root.findViewById(R.id.bottom_rl3).setVisibility(View.VISIBLE);
         progressBarBottom3.setVisibility(View.GONE);
@@ -495,7 +490,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                 View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
                 RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
                 rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-                rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
                 rlp.setMargins(0, 300, 180, 0);
                 //map.setMyLocationEnabled(true);
                 map.getUiSettings().setMyLocationButtonEnabled(true);
@@ -577,7 +572,6 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                 .playOn(searchView);
     }
     public void createMarkerList(int model_id,int checkNow,String startdate,String startcost,String endcost,String enddate){
-        MainActivity.vehiclesList.clear();
         vehiclesList.clear();
         homeProgress.setVisibility(View.VISIBLE);
         Call<ListVehicles> call = RestAdapter.createAPI().getVehicleList(model_id, checkNow, startdate, enddate, startcost,endcost);
@@ -588,7 +582,6 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                     ListVehicles res = response.body();
                     if(res != null){
                         vehiclesList = res.getVehicles();
-                        MainActivity.vehiclesList.addAll(vehiclesList);
                         if(vehiclesList.isEmpty()){
                             Toast.makeText(getContext(), "OOPS!, No vehicles found", Toast.LENGTH_SHORT).show();
                         }
