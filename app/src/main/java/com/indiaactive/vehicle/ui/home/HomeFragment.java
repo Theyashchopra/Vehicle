@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -141,14 +142,17 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     List<String> spinnerList;
     VehicleModelRoot vehicleModelRoot;
     int selectedModelId;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     //general
     private ProgressBar progressBar, progressBarBottom2, progressBarBottom3,progressBarBottomList,progressBarFilter;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_home, container, false);
+        sharedPreferences = this.getActivity().getSharedPreferences("login",Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         selectedModelId = -1;
         bottomState = 0;
-
         mapView = root.findViewById(R.id.mapfragment);
         progressBar = root.findViewById(R.id.main_progress);
         master_vehicle = root.findViewById(R.id.master_vehicle);
@@ -510,6 +514,10 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                         Location currentLocation = (Location) task.getResult();
                         try {
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
+                            editor.putFloat("lat",(float)currentLocation.getLatitude());
+                            editor.apply();
+                            editor.putFloat("long",(float)currentLocation.getLongitude());
+                            editor.apply();
                         }catch (Exception e){
                             //21.1610282,78.9324241
 

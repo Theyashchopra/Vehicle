@@ -12,10 +12,13 @@ import com.indiaactive.vehicle.datamodels.VehicleDetailsData;
 import com.indiaactive.vehicle.datamodels.VehicleModelRoot;
 import com.indiaactive.vehicle.datamodels.VehicleTypeRoot;
 
+import java.util.Map;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -93,4 +96,7 @@ public interface API {
     //get owner data
     @GET("regowner")
     Call<ProfileOwnerData> getOwnerData(@Query("id") int id);
+
+    @POST("enquiry")
+    Call<Map> callEnquiry(@Body Map map);
 }

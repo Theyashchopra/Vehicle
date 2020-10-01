@@ -6,7 +6,7 @@
     app:cardCornerRadius="8dp"
     app:cardBackgroundColor="#fff"
     android:layout_margin="10dp"
-    android:layout_height="200dp">
+    android:layout_height="180dp">
     <ImageView
         android:id="@+id/vimage"
         android:layout_width="match_parent"

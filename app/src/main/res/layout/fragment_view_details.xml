@@ -57,7 +57,7 @@
         android:id="@+id/viewmodel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Model name"
+        android:text=""
         android:textColor="@android:color/black"
         android:layout_toEndOf="@id/mo"
         android:layout_alignBottom="@id/mo"/>
@@ -74,7 +74,7 @@
         android:id="@+id/platenumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MH31 A 1234"
+        android:text=""
         android:textColor="@android:color/black"
         android:layout_alignBottom="@id/pl"
         android:layout_toEndOf="@id/pl"/>
@@ -91,7 +91,7 @@
         android:id="@+id/viewavailability"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Busy"
+        android:text=""
         android:textColor="@android:color/holo_orange_light"
         android:layout_alignBottom="@id/avai"
         android:layout_toEndOf="@id/avai"/>
@@ -108,7 +108,7 @@
         android:id="@+id/viewcategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="test"
+        android:text=""
         android:textColor="@android:color/black"
         android:layout_alignBottom="@id/cat"
         android:layout_toEndOf="@id/cat"/>
@@ -127,7 +127,7 @@
         android:id="@+id/totalkmscomp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1234"
+        android:text=""
         android:textColor="@android:color/black"
         android:layout_alignBottom="@id/tkc"
         android:layout_toEndOf="@id/tkc"/>
@@ -189,7 +189,7 @@
         android:id="@+id/viewrentperday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="10000"
+        android:text=""
         android:textColor="@android:color/black"
         android:layout_toEndOf="@id/rs1"
         android:layout_alignBottom="@id/rs1"/>
@@ -219,14 +219,11 @@
         android:textColor="@android:color/black"
         android:layout_toEndOf="@id/rs2"
         android:layout_alignBottom="@id/rs2"/>
-   <Button
-       android:layout_width="wrap_content"
+   <include
        android:layout_height="wrap_content"
-       android:text="Contact"
-       android:id="@+id/call_owner"
-       android:layout_margin="5dp"
-       android:drawableLeft="@drawable/ic_baseline_call_white"
-       android:layout_below="@id/viewrentperhour"
-       android:layout_centerHorizontal="true"/>
+       android:layout_width="wrap_content"
+       android:layout_margin="10dp"
+       layout="@layout/owner_card"
+       android:layout_below="@id/viewrentperhour"/>
     </RelativeLayout>
 </ScrollView>

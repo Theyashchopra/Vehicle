@@ -1,7 +1,9 @@
 package com.indiaactive.vehicle.ui.home;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,7 +36,9 @@ import com.indiaactive.vehicle.dialogs.RequestPopup;
 import com.indiaactive.vehicle.interfaces.API;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -43,7 +47,7 @@ import retrofit2.Response;
 
 public class ViewDetailsFragment extends Fragment {
     
-    ProgressBar progressBar;
+    ProgressBar progressBar,ownerProgress;
     RecyclerView recyclerView;
     Button call;
     View root;
@@ -52,8 +56,9 @@ public class ViewDetailsFragment extends Fragment {
     int vid;
     List<Bitmap> bitmapList;
     VehicleImageAdapter vehicleImageAdapter;
-    TextView name,plate,avail,model,kms,yom,owner,rent_per_day,rent_per_hour;
+    TextView name,plate,avail,model,kms,yom,owner,rent_per_day,rent_per_hour,owner_name,owner_mobile1,owner_mobile2,owner_email;
     String mobile,mobile2;
+    SharedPreferences sharedPreferences;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_view_details, container, false);
@@ -65,6 +70,12 @@ public class ViewDetailsFragment extends Fragment {
     }
 
     private void init(){
+        sharedPreferences = this.getActivity().getSharedPreferences("login", Context.MODE_PRIVATE);
+        owner_email = root.findViewById(R.id.owner_email);
+        ownerProgress = root.findViewById(R.id.card_progress);
+        owner_name = root.findViewById(R.id.owner_name);
+        owner_mobile1 = root.findViewById(R.id.owner_mobile1);
+        owner_mobile2 = root.findViewById(R.id.owner_mobile2);
         progressBar = root.findViewById(R.id.progress);
         name = root.findViewById(R.id.viewmodel);
         plate = root.findViewById(R.id.platenumber);
@@ -80,7 +91,7 @@ public class ViewDetailsFragment extends Fragment {
         recyclerView = root.findViewById(R.id.viewvehimage);
         recyclerView.setAdapter(vehicleImageAdapter);
         recyclerView.scheduleLayoutAnimation();
-        call = root.findViewById(R.id.call_owner);
+        call = root.findViewById(R.id.owner_call);
         backbutton = root.findViewById(R.id.viewback);
         try {
             getData();
@@ -146,6 +157,10 @@ public class ViewDetailsFragment extends Fragment {
                 if(bmp != null) {
                     addImage(bmp);
                     notifyData();
+                }else{
+                    Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_error_404);
+                    addImage(largeIcon);
+                    notifyData();
                 }
             }
 
@@ -165,6 +180,10 @@ public class ViewDetailsFragment extends Fragment {
                 Bitmap bmp = BitmapFactory.decodeStream(response.body().byteStream());
                 if(bmp != null) {
                     addImage(bmp);
+                    notifyData();
+                }else{
+                    Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_error_404);
+                    addImage(largeIcon);
                     notifyData();
                 }
             }
@@ -186,6 +205,10 @@ public class ViewDetailsFragment extends Fragment {
                 if(bmp != null) {
                     addImage(bmp);
                     notifyData();
+                }else{
+                    Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_error_404);
+                    addImage(largeIcon);
+                    notifyData();
                 }
             }
 
@@ -197,6 +220,7 @@ public class ViewDetailsFragment extends Fragment {
     }
 
     private void getOwnerData(int id){
+        ownerProgress.setVisibility(View.VISIBLE);
         API api = RestAdapter.createAPI();
         Call<ProfileOwnerData> call = api.getOwnerData(id);
         call.enqueue(new Callback<ProfileOwnerData>() {
@@ -205,16 +229,23 @@ public class ViewDetailsFragment extends Fragment {
                 if(response.isSuccessful()){
                     ProfileOwnerData p = response.body();
                     if(p != null){
+                        ownerProgress.setVisibility(View.INVISIBLE);
+                        owner_email.setText(p.getEmail());
                         owner.setText(p.getName());
+                        owner_name.setText(p.getName());
+                        owner_mobile1.setText(p.getMobile());
+                        owner_mobile2.setText(p.getMobile2());
                         setMobile(p.getMobile());
                         setMobile2(p.getMobile2());
+                        sendEnquiry(vid,p.getId());
                     }
+                    ownerProgress.setVisibility(View.INVISIBLE);
                 }
             }
 
             @Override
             public void onFailure(Call<ProfileOwnerData> call, Throwable t) {
-
+                ownerProgress.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -256,5 +287,33 @@ public class ViewDetailsFragment extends Fragment {
 
     private void notifyData(){
         vehicleImageAdapter.notifyDataSetChanged();
+    }
+
+    private void sendEnquiry(int vid,int oid){
+        Map<String,Object> map = new HashMap<>();
+        int uid = sharedPreferences.getInt("id",0);
+        if(uid == 0){
+            return;
+        }
+        float lat = sharedPreferences.getFloat("lat",0.0f);
+        float lon = sharedPreferences.getFloat("long",0.0f);
+        map.put("uid",uid);
+        map.put("owner_id",oid);
+        map.put("v_id",vid);
+        map.put("lat",lat);
+        map.put("lon",lon);
+        API api = RestAdapter.createAPI();
+        Call<Map> call = api.callEnquiry(map);
+        call.enqueue(new Callback<Map>() {
+            @Override
+            public void onResponse(Call<Map> call, Response<Map> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Map> call, Throwable t) {
+
+            }
+        });
     }
 }
