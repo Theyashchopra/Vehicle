@@ -56,6 +56,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.indiaactive.vehicle.GPS.GpsUtils;
 import com.indiaactive.vehicle.R;
+import com.indiaactive.vehicle.activities.MainActivity;
 import com.indiaactive.vehicle.adapters.MasterAdapter;
 import com.indiaactive.vehicle.adapters.RestAdapter;
 import com.indiaactive.vehicle.adapters.VehicleListAdapter;
@@ -156,6 +157,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         searchView = root.findViewById(R.id.homesearch);
         isGPS = false;
         vehicleRecycle = root.findViewById(R.id.homerecycle2);
+        driverRecycle = root.findViewById(R.id.driverrecycle);
         backIV = root.findViewById(R.id.backimage);
         bottomll = root.findViewById(R.id.bottom_ll);
         bottomcl = root.findViewById(R.id.bottom_cl1);
@@ -312,7 +314,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         bottomcl.setVisibility(View.VISIBLE);
     }
     //not in use
-    public void initFilterPage(int id){
+    /*public void initFilterPage(int id){
         progressBarFilter.setVisibility(View.VISIBLE);
         bottomState = 2;
         String currentDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
@@ -405,16 +407,15 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         bottomcl.setVisibility(View.GONE);
         root.findViewById(R.id.pin).setVisibility(View.GONE);
         progressBarFilter.setVisibility(View.GONE);
-    }
+    }*/
 
     public void initThirdBottom(int model_id,int checkNow,String startdate,String startcost,String endcost,String enddate){
         bottomcl.setVisibility(View.GONE);
-        progressBarBottom3.setVisibility(View.VISIBLE);
+        //progressBarBottom3.setVisibility(View.VISIBLE);
         bottomState = 3;
         TextView tv = root.findViewById(R.id.typetv3);
         createMarkerList(model_id,checkNow,startdate,startcost,endcost,enddate);
         vehicleListAdapter = new VehicleListAdapter(vehiclesList, getContext(),this);
-        driverRecycle = root.findViewById(R.id.driverrecycle);
         AlphaInAnimationAdapter alphaInAnimationAdapter = new AlphaInAnimationAdapter(vehicleListAdapter);
         alphaInAnimationAdapter.setDuration(1000);
         alphaInAnimationAdapter.setInterpolator(new OvershootInterpolator());
@@ -444,7 +445,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             bottomState = 1;
             root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
             bottomcl.setVisibility(View.VISIBLE);
-            map.clear();
+            //map.clear();
             root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
 
         });
@@ -475,7 +476,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             map.getUiSettings().setMyLocationButtonEnabled(true);
             map.moveCamera(center);
             map.animateCamera(zoom);*/
-
+            resetState();
             Log.d(TAG, "onMapReady: map is ready");
             if (mLocationPermissionsGranted) {
                 getDeviceLocation();
@@ -572,6 +573,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                 .playOn(searchView);
     }
     public void createMarkerList(int model_id,int checkNow,String startdate,String startcost,String endcost,String enddate){
+        MainActivity.vehiclesList.clear();
         vehiclesList.clear();
         homeProgress.setVisibility(View.VISIBLE);
         Call<ListVehicles> call = RestAdapter.createAPI().getVehicleList(model_id, checkNow, startdate, enddate, startcost,endcost);
@@ -582,6 +584,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                     ListVehicles res = response.body();
                     if(res != null){
                         vehiclesList = res.getVehicles();
+                        MainActivity.vehiclesList.addAll(vehiclesList);
                         if(vehiclesList.isEmpty()){
                             Toast.makeText(getContext(), "OOPS!, No vehicles found", Toast.LENGTH_SHORT).show();
                         }
@@ -612,6 +615,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                 MarkerPopup mk = new MarkerPopup();
                 Bundle args = new Bundle();
                 Log.i(TAG, "onMarkerClick: "+v.getName());
+                args.putInt("vid",v.getV_id());
                 args.putString("name",v.getName());
                 args.putString("madein",v.getYear_of_man());
                 args.putString("kms",String.valueOf(v.getRun_km_hr()));
@@ -697,7 +701,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
 
     private void resetState(){
         if(MainActivity.vehiclesList.isEmpty()){
-            Log.i("LOL","EMPTY");
+            Log.i("LOL_NEW","EMPTY");
             return;
         }
         Log.i("LOG786",MainActivity.vehiclesList.get(0).getName());
@@ -707,5 +711,38 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         driverRecycle.scheduleLayoutAnimation();
         homeProgress.setVisibility(View.INVISIBLE);
         addMarkersOnMap(MainActivity.vehiclesList);
+        bottomcl.setVisibility(View.GONE);
+        //progressBarBottom3.setVisibility(View.VISIBLE);
+        bottomState = 3;
+        bottomll.setVisibility(View.GONE);
+        root.findViewById(R.id.filtercl).setVisibility(View.GONE);
+        root.findViewById(R.id.bottom_rl3).setVisibility(View.VISIBLE);
+        ImageView up = root.findViewById(R.id.arrowup);
+
+        up.setOnClickListener(v -> {
+            bottomState = 4;
+            root.startAnimation(slideUp);
+            new Handler(Looper.myLooper()).postDelayed(() -> {
+                progressBarBottomList.setVisibility(View.GONE);
+                pin.setVisibility(View.INVISIBLE);
+                root.findViewById(R.id.driverlistrl).setVisibility(View.VISIBLE);
+                root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
+            },300);
+        });
+        root.findViewById(R.id.downarrow).setOnClickListener(v -> {
+            bottomState = 3;
+            root.startAnimation(slideDown);
+            pin.setVisibility(View.VISIBLE);
+            root.findViewById(R.id.driverlistrl).setVisibility(View.GONE);
+            root.findViewById(R.id.bottom_rl3).setVisibility(View.VISIBLE);
+        });
+        root.findViewById(R.id.backimage3).setOnClickListener(v -> {
+            progressBarBottom3.setVisibility(View.GONE);
+            bottomState = 1;
+            root.findViewById(R.id.bottom_rl3).setVisibility(View.GONE);
+            bottomll.setVisibility(View.VISIBLE);
+            bottomcl.setVisibility(View.GONE);
+            root.findViewById(R.id.pin).setVisibility(View.VISIBLE);
+        });
     }
 }

@@ -13,7 +13,6 @@ public class VehicleDetailsData {
     int rent_per_hour_with_fuel;
     int rent_per_hour_without_fuel;
     int rent_per_day_without_fuel;
-    String yom;
     String ip_address;
     String plate_no;
     boolean availibility;
@@ -25,7 +24,6 @@ public class VehicleDetailsData {
         this.name = name;
         this.vehicle_model_id = vehicle_model_id;
         this.year_of_man = yom;
-        this.yom = yom;
         this.total_run_hrs = total_run_hrs;
         this.run_km_hr = run_km_hr;
         this.fuel_consumption_rate = fuel_consumption_rate;
@@ -170,5 +168,9 @@ public class VehicleDetailsData {
 
     public int getDriver_id() {
         return driver_id;
+    }
+
+    public String getYear_of_man() {
+        return year_of_man;
     }
 }

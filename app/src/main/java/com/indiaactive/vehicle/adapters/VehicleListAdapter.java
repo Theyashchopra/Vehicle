@@ -1,6 +1,7 @@
 package com.indiaactive.vehicle.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +42,10 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
         holder.oname.setText(curr.getName());
         holder.dname.setText(curr.getPlate_no());
         holder.cardcl.setOnClickListener(v ->{
+            Bundle args = new Bundle();
+            args.putInt("vid",mList.get(position).getV_id());
             Navigation.findNavController(mFragment.getActivity(),R.id.nav_host_fragment)
-                    .navigate(R.id.action_navigation_home_to_viewDetailsFragment);
+                    .navigate(R.id.action_navigation_home_to_viewDetailsFragment,args);
         });
     }
 

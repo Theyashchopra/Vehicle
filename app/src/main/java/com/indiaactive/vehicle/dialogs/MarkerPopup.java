@@ -20,7 +20,7 @@ public class MarkerPopup extends DialogFragment {
     TextView name,madeintv,rpDaytv,kmscompletedtv,rpHourtv;
     String vName,madeIn,kmscompleted,rentPerDay,rentPerHour,plate;
     Button viewInfo;
-
+    int vid;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class MarkerPopup extends DialogFragment {
         view = inflater.inflate(R.layout.marker_popup, container, false);
 
         Bundle args = getArguments();
-
+        vid = args.getInt("vid");
         vName = args.getString("name");
         madeIn = args.getString("madein");
         kmscompleted = args.getString("kms");
@@ -53,7 +53,9 @@ public class MarkerPopup extends DialogFragment {
         rpHourtv.setText(rentPerHour);
 
         viewInfo.setOnClickListener(v -> {
-            Navigation.findNavController(getActivity(),R.id.nav_host_fragment).navigate(R.id.action_navigation_home_to_viewDetailsFragment);
+            Bundle args1 = new Bundle();
+            args1.putInt("vid",vid);
+            Navigation.findNavController(getActivity(),R.id.nav_host_fragment).navigate(R.id.action_navigation_home_to_viewDetailsFragment,args1);
             getDialog().dismiss();
         });
         return view;

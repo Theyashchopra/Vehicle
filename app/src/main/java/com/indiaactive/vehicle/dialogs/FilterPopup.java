@@ -89,7 +89,7 @@ public class FilterPopup extends DialogFragment implements  DatePickerDialog.OnD
     private void init(){
         selectedModelId = -1;
         startcost = "";
-        endcost = "";
+        endcost = "1000";
         enddate = "";
         startdate = "";
         search = view.findViewById(R.id.search);
@@ -227,8 +227,10 @@ public class FilterPopup extends DialogFragment implements  DatePickerDialog.OnD
                         if(spinnerList.isEmpty()){
                             Toast.makeText(getContext(), "No Models registered for this type yet", Toast.LENGTH_SHORT).show();
                         }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_dropdown_item,spinnerList);
-                        spinner.setAdapter(adapter);
+                        try {
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, spinnerList);
+                            spinner.setAdapter(adapter);
+                        }catch (Exception e){}
                         progressBar.setVisibility(View.INVISIBLE);
                     }
                 }else{

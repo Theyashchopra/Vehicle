@@ -5,8 +5,10 @@ import androidx.annotation.Nullable;
 import com.indiaactive.vehicle.datamodels.ListVehicles;
 import com.indiaactive.vehicle.datamodels.MasterRoot;
 import com.indiaactive.vehicle.datamodels.MasterVehicle;
+import com.indiaactive.vehicle.datamodels.ProfileOwnerData;
 import com.indiaactive.vehicle.datamodels.UserData;
 import com.indiaactive.vehicle.datamodels.VehicleData;
+import com.indiaactive.vehicle.datamodels.VehicleDetailsData;
 import com.indiaactive.vehicle.datamodels.VehicleModelRoot;
 import com.indiaactive.vehicle.datamodels.VehicleTypeRoot;
 
@@ -73,4 +75,22 @@ public interface API {
     Call<ListVehicles> getVehicleList(@Query("model_id") int model_id, @Query("availibility") int availability, @Query("start_date") String start_date, @Query("end_date") String end_date, @Query("price_start") String price_Start, @Query("price_end") String price_end);
 
 
+    @GET("vehicle")
+    Call<VehicleDetailsData> getVehicleDetails(@Query("id") int id);
+
+    //get vfront
+    @GET("vdocs")
+    Call<ResponseBody> getVfront(@Query("vfront")int id);
+
+    //get vback
+    @GET("vdocs")
+    Call<ResponseBody> getVback(@Query("vback")int id);
+
+    //get vside
+    @GET("vdocs")
+    Call<ResponseBody> getVside(@Query("vside")int id);
+
+    //get owner data
+    @GET("regowner")
+    Call<ProfileOwnerData> getOwnerData(@Query("id") int id);
 }

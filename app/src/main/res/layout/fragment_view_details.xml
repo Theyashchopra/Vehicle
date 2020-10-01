@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="#f5f5f5"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.home.ViewDetailsFragment">
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/progress"
+            android:visibility="invisible"/>
     <ImageView
         android:id="@+id/viewback"
         android:layout_width="wrap_content"
@@ -26,15 +35,16 @@
         android:layout_centerHorizontal="true"
         android:layout_alignBottom="@id/viewback"/>
 
-    <ImageView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/viewvehimage"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:layout_margin="12dp"
-        android:src="@drawable/ic_home_black_24dp"
+        android:layoutAnimation="@anim/layout_animation"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_below="@id/viewback"
-        android:layout_centerHorizontal="true"/>
-
+        android:orientation="horizontal"
+        android:nestedScrollingEnabled="true"/>
     <TextView
         android:id="@+id/mo"
         android:layout_width="wrap_content"
@@ -90,7 +100,7 @@
         android:id="@+id/cat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Category: "
+        android:text="Model: "
         android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
         android:layout_below="@id/avai"/>
@@ -102,42 +112,13 @@
         android:textColor="@android:color/black"
         android:layout_alignBottom="@id/cat"
         android:layout_toEndOf="@id/cat"/>
-    <ImageView
-        android:id="@+id/nextcat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_arrow_right"
-        android:layout_toEndOf="@id/viewcategory"
-        android:layout_alignTop="@id/viewcategory"/>
-    <TextView
-        android:id="@+id/subcategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="test1"
-        android:textColor="@android:color/black"
-        android:layout_toEndOf="@id/nextcat"
-        android:layout_alignBottom="@id/viewcategory"/>
-    <ImageView
-        android:id="@+id/nextcat1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_arrow_right"
-        android:layout_alignTop="@id/nextcat"
-        android:layout_toEndOf="@id/subcategory"/>
-    <TextView
-        android:id="@+id/subcategory1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="test2"
-        android:textColor="@android:color/black"
-        android:layout_toEndOf="@id/nextcat1"
-        android:layout_alignBottom="@id/subcategory"/>
+
 
     <TextView
         android:id="@+id/tkc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total kms completed: "
+        android:text="Speed: "
         android:layout_below="@+id/cat"
         android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
@@ -164,7 +145,7 @@
         android:id="@+id/manufacturedin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1969"
+        android:text=""
         android:textColor="@android:color/black"
         android:layout_alignBottom="@id/mfdin"
         android:layout_toEndOf="@id/mfdin"/>
@@ -182,7 +163,7 @@
         android:id="@+id/organization"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="XYZ Co op"
+        android:text=""
         android:textColor="@android:color/black"
         android:layout_alignBottom="@id/org"
         android:layout_toEndOf="@id/org"/>
@@ -217,7 +198,7 @@
         android:id="@+id/viewrph"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rent per day: "
+        android:text="Rent per hour: "
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_below="@id/viewrpd"
@@ -234,18 +215,18 @@
         android:id="@+id/viewrentperhour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="800"
+        android:text=""
         android:textColor="@android:color/black"
         android:layout_toEndOf="@id/rs2"
         android:layout_alignBottom="@id/rs2"/>
-    <Button
-        android:id="@+id/requestbt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Request Service"
-        android:textColor="@android:color/white"
-        android:background="@drawable/background_accent"
-        android:layout_margin="8dp"
-        android:layout_alignParentBottom="true"/>
-
-</RelativeLayout>
+   <Button
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Contact"
+       android:id="@+id/call_owner"
+       android:layout_margin="5dp"
+       android:drawableLeft="@drawable/ic_baseline_call_white"
+       android:layout_below="@id/viewrentperhour"
+       android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+</ScrollView>
