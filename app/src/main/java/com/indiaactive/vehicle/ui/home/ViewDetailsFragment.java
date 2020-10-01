@@ -10,7 +10,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,6 +47,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.content.ContentValues.TAG;
+
 public class ViewDetailsFragment extends Fragment {
     
     ProgressBar progressBar,ownerProgress;
@@ -65,6 +69,7 @@ public class ViewDetailsFragment extends Fragment {
         vid = -1;
         vid = getArguments().getInt("vid");
         init();
+        getCallPermission();
         backbutton.setOnClickListener(view -> Navigation.findNavController(requireActivity(),R.id.nav_host_fragment).navigateUp());
         return root;
     }
@@ -101,7 +106,6 @@ public class ViewDetailsFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        listeners();
     }
 
     private void getData() throws Exception{
@@ -238,6 +242,7 @@ public class ViewDetailsFragment extends Fragment {
                         setMobile(p.getMobile());
                         setMobile2(p.getMobile2());
                         sendEnquiry(vid,p.getId());
+                        listeners();
                     }
                     ownerProgress.setVisibility(View.INVISIBLE);
                 }
@@ -255,7 +260,7 @@ public class ViewDetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(mobile.isEmpty()){
-                    Toast.makeText(getContext(), "Please wait", Toast.LENGTH_SHORT).show();
+                    getCallPermission();
                     return;
                 }
                 Intent phoneIntent = new Intent(Intent.ACTION_CALL);
@@ -315,5 +320,35 @@ public class ViewDetailsFragment extends Fragment {
 
             }
         });
+    }
+
+    private void getCallPermission(){
+        Log.d(TAG, "getLocationPermission: getting location permissions");
+        String[] permissions = {Manifest.permission.CALL_PHONE};
+        if(ContextCompat.checkSelfPermission(getContext().getApplicationContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED){
+
+        }else{
+            ActivityCompat.requestPermissions(getActivity(), permissions, 12);
+        }
+
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult: called.");
+
+        switch(requestCode){
+            case 12:{
+                if(grantResults.length > 0){
+                    for(int i = 0; i < grantResults.length; i++){
+                        if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
+                            Log.d(TAG, "onRequestPermissionsResult: permission failed");
+                            return;
+                        }
+                    }
+                    Log.d(TAG, "onRequestPermissionsResult: permission granted");
+                    //initialize our map
+                }
+            }
+        }
     }
 }
