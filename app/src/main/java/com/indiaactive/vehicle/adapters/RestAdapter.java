@@ -32,7 +32,7 @@ public class RestAdapter {
         OkHttpClient okHttpClient = builder.build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://delivery-rest-api.herokuapp.com/")
+                .baseUrl("https://vehicle-rest-api.herokuapp.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
