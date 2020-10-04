@@ -44,12 +44,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:iconifiedByDefault="false"
+        android:visibility="invisible"
         app:defaultQueryHint="Search location"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="8dp"
         android:background="@drawable/background_edittext"/>
+
+        <fragment android:id="@+id/autocomplete_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+
         <!-- Bottom card 1 -->
     <LinearLayout
         android:id="@+id/bottom_ll"

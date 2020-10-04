@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
+import android.widget.ActionMenuView;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,6 +45,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -55,6 +58,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.indiaactive.vehicle.GPS.GpsUtils;
 import com.indiaactive.vehicle.R;
 import com.indiaactive.vehicle.activities.MainActivity;
@@ -77,6 +86,7 @@ import com.indiaactive.vehicle.interfaces.API;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -193,6 +203,7 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
         initMap();
         initFirstBottom();
         resetState();
+        placesApi();
         animations(bottom1cards);
         new GpsUtils(getContext()).turnGPSOn(isGPSEnable -> isGPS = isGPSEnable);
         return root;
@@ -251,6 +262,40 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
             }
         });
     }
+
+    private void placesApi(){
+        double lat = sharedPreferences.getFloat("lat",0);
+        double lng = sharedPreferences.getFloat("long",0);
+        Places.initialize(root.getContext(),getString(R.string.api));
+        PlacesClient placesClient = Places.createClient(getContext());
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        autocompleteFragment.getView().setBackgroundColor(Color.WHITE);
+        autocompleteFragment.setLocationBias(RectangularBounds.newInstance(
+                new LatLng(lat-0.02, lng-0.02),
+                new LatLng(lat+0.02, lng+0.02)));
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG,Place.Field.ADDRESS));
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                Log.i(TAG, "LATLNG"+place.getName()+","+place.getLatLng());
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(),16));
+                searchView.setQuery(place.getAddress().toString(),false);
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+    }
+
     /*
     * Bottom cards related
     */
