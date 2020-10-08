@@ -1,16 +1,13 @@
 package com.indiaactive.vehicle.interfaces;
 
-import androidx.annotation.Nullable;
-
 import com.indiaactive.vehicle.datamodels.ListVehicles;
 import com.indiaactive.vehicle.datamodels.MasterRoot;
-import com.indiaactive.vehicle.datamodels.MasterVehicle;
 import com.indiaactive.vehicle.datamodels.ProfileOwnerData;
 import com.indiaactive.vehicle.datamodels.UserData;
-import com.indiaactive.vehicle.datamodels.VehicleData;
 import com.indiaactive.vehicle.datamodels.VehicleDetailsData;
 import com.indiaactive.vehicle.datamodels.VehicleModelRoot;
 import com.indiaactive.vehicle.datamodels.VehicleTypeRoot;
+import com.indiaactive.vehicle.datamodels.ListOfVehicle;
 
 import java.util.Map;
 
@@ -19,8 +16,6 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -99,4 +94,11 @@ public interface API {
 
     @POST("enquiry")
     Call<Map> callEnquiry(@Body Map map);
+
+    @GET("vsearch")
+    Call<ListOfVehicle> vehicleSearch(@Query("namelist") String namelist);
+
+    @GET("vsearch")
+    Call<ListVehicles> getVehiclesByName(@Query("name") String name);
+
 }

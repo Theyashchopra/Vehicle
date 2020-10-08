@@ -19,11 +19,18 @@
             app:exitAnim="@android:anim/slide_out_right"/>
     </fragment>
 
-<!--    <fragment
+    <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.lifecapable.vehicle.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />-->
+        android:name="com.indiaactive.vehicle.ui.dashboard.DashboardFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_viewOnMapFragment"
+            app:destination="@id/viewOnMapFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_viewDetailsFragment"
+            app:destination="@id/viewDetailsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notifications"
@@ -44,5 +51,14 @@
             app:popExitAnim="@android:anim/slide_out_right"
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/viewOnMapFragment"
+        android:name="com.indiaactive.vehicle.ui.dashboard.ViewOnMapFragment"
+        android:label="Markers on Map"
+        tools:layout="@layout/fragment_view_on_map" >
+        <action
+            android:id="@+id/action_viewOnMapFragment_to_viewDetailsFragment"
+            app:destination="@id/viewDetailsFragment" />
     </fragment>
 </navigation>
