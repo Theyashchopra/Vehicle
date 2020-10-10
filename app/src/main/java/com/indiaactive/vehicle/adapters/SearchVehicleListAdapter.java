@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.indiaactive.vehicle.R;
@@ -41,13 +40,12 @@ public class SearchVehicleListAdapter extends RecyclerView.Adapter<SearchVehicle
     public void onBindViewHolder(@NonNull SearchVehicleViewHolder holder, int position) {
         Vehicles curr = mList.get(position);
         holder.oname.setText(curr.getName());
-        holder.dname.setText(curr.getPlate_no().toUpperCase());
+        holder.dname.setText(curr.getPlate_no());
         holder.cardcl.setOnClickListener(v ->{
             Bundle args = new Bundle();
             args.putInt("vid",mList.get(position).getV_id());
-            /*Navigation.findNavController(mFragment.getActivity(),R.id.nav_host_fragment)
-                    .navigate(R.id.action_viewDetailsFragment_to_navigation_home,args);*/
-            NavHostFragment.findNavController(mFragment).navigate(R.id.action_viewDetailsFragment_to_navigation_home,args);
+            Navigation.findNavController(mFragment.getActivity(),R.id.nav_host_fragment)
+                    .navigate(R.id.action_navigation_dashboard_to_viewDetailsFragment,args);
         });
     }
 
