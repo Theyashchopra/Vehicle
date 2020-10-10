@@ -16,6 +16,8 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.indiaactive.vehicle.R;
 
 import static android.content.ContentValues.TAG;
@@ -28,7 +30,9 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-
+        YoYo.with(Techniques.FadeIn)
+                .duration(1500)
+                .playOn(findViewById(R.id.logo));
         sharedPreferences = getSharedPreferences("login",MODE_PRIVATE);
         isLogin = sharedPreferences.getBoolean("login",false);
         getLocationPermission();
