@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +40,7 @@ public class DashboardFragment extends Fragment {
     List<String> searchList;
     ArrayAdapter<String> searchAdapter;
     String selected;
-
+    ProgressBar progressBar;
     RecyclerView vehicleRecycle;
     SearchVehicleListAdapter vehicleListAdapter;
     List<Vehicles> vehiclesList;
@@ -48,9 +49,11 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_dashboard, container, false);
         autoCompleteTextView = root.findViewById(R.id.searchvehicle);
+        progressBar = root.findViewById(R.id.search_progress);
         vehicleRecycle = root.findViewById(R.id.vehiclerecycle);
         searchText = root.findViewById(R.id.searchtext);
         vehiclesList = new ArrayList<>();
+        searchList = new ArrayList<>();
         getSearchData();
         root.findViewById(R.id.vehicleshowmap).setOnClickListener(view -> {
             if(selected != null){
@@ -62,7 +65,6 @@ public class DashboardFragment extends Fragment {
         return root;
     }
     public void getSearchData(){
-        searchList = new ArrayList<>();
         searchList.clear();
         Call<ListOfVehicle> call = RestAdapter.createAPI().vehicleSearch("list");
         call.enqueue(new Callback<ListOfVehicle>() {
@@ -75,6 +77,7 @@ public class DashboardFragment extends Fragment {
                 if(res != null){
                     if(res.getNames() != null){
                         searchList.addAll(res.getNames());
+                        setupSearch(searchList);
                         if(searchAdapter != null){
                             searchAdapter.notifyDataSetChanged();
                         }
@@ -87,9 +90,8 @@ public class DashboardFragment extends Fragment {
 
             }
         });
-        setupSearch();
     }
-    public void setupSearch(){
+    public void setupSearch(List<String> searchList){
         searchAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.select_dialog_item,searchList);
         autoCompleteTextView.setThreshold(1);
         autoCompleteTextView.setAdapter(searchAdapter);
@@ -103,15 +105,15 @@ public class DashboardFragment extends Fragment {
         });
         searchAdapter.notifyDataSetChanged();
     }
-    public void createList(String name)
-    {
+    public void createList(String name) {
         vehiclesList.clear();
-
+        progressBar.setVisibility(View.VISIBLE);
         Call<ListVehicles> call = RestAdapter.createAPI().getVehiclesByName(name);
         call.enqueue(new Callback<ListVehicles>() {
             @Override
             public void onResponse(Call<ListVehicles> call, Response<ListVehicles> response) {
                 if(response.isSuccessful()){
+                    progressBar.setVisibility(View.INVISIBLE);
                     ListVehicles res = response.body();
                     if(res != null){
 
@@ -122,6 +124,7 @@ public class DashboardFragment extends Fragment {
                         vehicleListAdapter = new SearchVehicleListAdapter(vehiclesList, getContext(), DashboardFragment.this);
                         vehicleRecycle.setLayoutManager(new LinearLayoutManager(getContext()));
                         vehicleRecycle.setAdapter(vehicleListAdapter);
+                        vehicleRecycle.scheduleLayoutAnimation();
                     }
                 }
             }
@@ -129,6 +132,7 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onFailure(Call<ListVehicles> call, Throwable t) {
                 Log.e("GET List", t.getMessage());
+                progressBar.setVisibility(View.INVISIBLE);
              //   homeProgress.setVisibility(View.INVISIBLE);
             }
         });
@@ -138,6 +142,6 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getSearchData();
+        //getSearchData();
     }
 }

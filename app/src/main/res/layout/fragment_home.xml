@@ -213,12 +213,12 @@
                 android:id="@+id/resultsof3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Results of " />
+                android:text="Results" />
             <TextView
                 android:id="@+id/typetv3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="xyz"
+                android:text=""
                 android:textColor="@color/colorAccent" />
         </LinearLayout>
     </RelativeLayout>

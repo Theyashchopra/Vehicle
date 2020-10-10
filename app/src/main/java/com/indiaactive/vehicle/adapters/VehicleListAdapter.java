@@ -40,7 +40,7 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
     public void onBindViewHolder(@NonNull DriverViewHolder holder, int position) {
         Vehicles curr = mList.get(position);
         holder.oname.setText(curr.getName());
-        holder.dname.setText(curr.getPlate_no());
+        holder.dname.setText(curr.getPlate_no().toUpperCase());
         holder.cardcl.setOnClickListener(v ->{
             Bundle args = new Bundle();
             args.putInt("vid",mList.get(position).getV_id());
