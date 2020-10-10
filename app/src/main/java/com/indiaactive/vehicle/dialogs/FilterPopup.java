@@ -88,8 +88,8 @@ public class FilterPopup extends DialogFragment implements  DatePickerDialog.OnD
 
     private void init(){
         selectedModelId = -1;
-        startcost = "";
-        endcost = "1000";
+        startcost = "0";
+        endcost = "100000";
         enddate = "";
         startdate = "";
         search = view.findViewById(R.id.search);
@@ -110,8 +110,12 @@ public class FilterPopup extends DialogFragment implements  DatePickerDialog.OnD
         enddate = currentDate;
         endDate.setText(currentDate);
         checkNow = 0;
+        startcost = "0";
+        endcost = "100000";
+
         rangeSeekBar.setStepSize(1000);
-        rangeSeekBar.setMax(10000);
+        rangeSeekBar.setMax(100000);
+        rangeSeekBar.setProgress(0,100000);
         checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if(b){
                 checkNow = 1;

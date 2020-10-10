@@ -45,7 +45,7 @@ public class SearchVehicleListAdapter extends RecyclerView.Adapter<SearchVehicle
             Bundle args = new Bundle();
             args.putInt("vid",mList.get(position).getV_id());
             Navigation.findNavController(mFragment.getActivity(),R.id.nav_host_fragment)
-                    .navigate(R.id.action_viewDetailsFragment_to_navigation_home,args);
+                    .navigate(R.id.action_navigation_dashboard_to_viewDetailsFragment,args);
         });
     }
 
