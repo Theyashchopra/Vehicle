@@ -18,6 +18,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.indiaactive.vehicle.R;
 import com.indiaactive.vehicle.adapters.RestAdapter;
 import com.indiaactive.vehicle.adapters.SearchVehicleListAdapter;
@@ -44,7 +45,7 @@ public class DashboardFragment extends Fragment {
     RecyclerView vehicleRecycle;
     SearchVehicleListAdapter vehicleListAdapter;
     List<Vehicles> vehiclesList;
-    TextView searchText;
+    LottieAnimationView searchText;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_dashboard, container, false);
