@@ -15,6 +15,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -51,18 +52,17 @@ import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity implements Dialog_Get_ImageActivity.onPhotoSelectedListener, Dialog_Get_ImageActivity.MyDialogCloseListener {
 
-    // https://stackoverflow.com/questions/13562429/how-many-ways-to-convert-bitmap-to-string-and-vice-versa/18052269
-    // https://stackoverflow.com/questions/15659250/how-to-convert-an-image-from-url-to-hex-string
-    TextView notice;
+    TextView notice, readTerms;
     MultipartBody.Part isImage;
     Bitmap imagebitmap, profilebitmap;
     Uri imageuri,profileuri,generalUri;
     Dialog_Get_ImageActivity dgi;
-    TextInputEditText name,email,mobile,password,confirm;
+    TextInputEditText name,email,mobile,password,confirm,reference;
     Button register;
     ProgressBar progressBar;
     ImageView imageView;
     TextInputEditText [] textInputEditTextarr;
+    CheckBox terms;
     Object [] objects;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +85,9 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
     }
 
     private void initialise(){
+        reference = findViewById(R.id.refcode);
+        terms = findViewById(R.id.terms);
+        readTerms = findViewById(R.id.read_terms);
         notice = findViewById(R.id.notice);
         progressBar = findViewById(R.id.progress);
         name = findViewById(R.id.nameRg);
@@ -103,6 +106,10 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
     }
 
     private void validateAndRegister() throws IOException {
+        if(!terms.isChecked()){
+            Toast.makeText(this, "Please accept Terms and Conditions", Toast.LENGTH_SHORT).show();
+            return;
+        }
         progressBar.setVisibility(View.VISIBLE);
         UserData userData = new UserData();
         String naam = name.getText().toString().trim();
@@ -110,6 +117,7 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
         String number = mobile.getText().toString().trim();
         String pass = password.getText().toString().trim();
         String conf = confirm.getText().toString().trim();
+        String refcode = reference.getText().toString().trim();
         String image = "";
         if(naam.isEmpty()){
             YoYo.with(Techniques.Shake)
@@ -148,19 +156,23 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
             MultipartBody.Part body = MultipartBody.Part.createFormData("pic", file.getName(), requestFile);
             isImage = body;
         }
+        if(refcode.isEmpty()){
+            refcode = "";
+        }
         //creating request body parameters to pass
         RequestBody fullName = RequestBody.create(naam,MediaType.parse("multipart/form-data"));
         RequestBody email_id = RequestBody.create(mail, MediaType.parse("multipart/form-data"));
         RequestBody mobile_number = RequestBody.create(number,MediaType.parse("multipart/form-data"));
         RequestBody password = RequestBody.create(pass, MediaType.parse("multipart/form-data"));
+        RequestBody refbody = RequestBody.create(refcode,MediaType.parse("multipart/form-data"));
         Call<UserData> call;
         if(isImage != null) {
-            call = RestAdapter.createAPI().registerUser(fullName, email_id, password, mobile_number, isImage);
+            call = RestAdapter.createAPI().registerUser(fullName, email_id, password, mobile_number, isImage,refbody);
         }else{
             File file = File.createTempFile("temp","jpg");
             RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
             MultipartBody.Part body = MultipartBody.Part.createFormData("pic", file.getName(), requestFile);
-            call = RestAdapter.createAPI().registerUser(fullName,email_id,password,mobile_number,body);
+            call = RestAdapter.createAPI().registerUser(fullName,email_id,password,mobile_number,body,refbody);
 
         }
         call.enqueue(new Callback<UserData>() {
@@ -235,6 +247,20 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
             dgi.setArguments(ags);
             dgi.show(getSupportFragmentManager(),"Dialog_select_Image");
             Log.e("Image Adder","----"+1);
+        });
+
+        readTerms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Uri uri = Uri.parse("http://rentbygps.epizy.com/hireonmap/term_of_service.html"); // missing 'http://' will cause crashed
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
 
     }

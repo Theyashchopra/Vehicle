@@ -35,7 +35,7 @@ public interface API {
     @POST("user")
     Call<UserData> registerUser(@Part("name") RequestBody name,
                                 @Part("email")RequestBody email, @Part("password")RequestBody password,
-                                @Part("mobile")RequestBody mobile, @Part MultipartBody.Part image);
+                                @Part("mobile")RequestBody mobile, @Part MultipartBody.Part image, @Part("refcode") RequestBody refcode);
 
     @Multipart
     @POST("user")
@@ -43,7 +43,8 @@ public interface API {
                                             @Part("email")RequestBody email, @Part("mobile")RequestBody mobile,
                                             @Part("google_id") RequestBody google_id,
                                             @Part("google_image") RequestBody google_image,
-                                            @Part MultipartBody.Part image);
+                                            @Part MultipartBody.Part image,
+                                            @Part("refcode") RequestBody refcode);
 
     /*@FormUrlEncoded
     @POST("user")

@@ -113,11 +113,12 @@ public class TwoStepVerificationActivity extends AppCompatActivity {
         RequestBody mobile_number = RequestBody.create(call,MediaType.parse("multipart/form-data"));
         RequestBody google_id = RequestBody.create(personId,MediaType.parse("multipart/form-data"));
         RequestBody google_image = RequestBody.create(personPhoto.toString(),MediaType.parse("multipart/form-data"));
+        RequestBody refcode = RequestBody.create("",MediaType.parse("multipart/form-data"));
         File file = File.createTempFile("temp","jpg");
         RequestBody requestFile = RequestBody.create(file,MediaType.parse("multipart/form-data"));
         MultipartBody.Part body = MultipartBody.Part.createFormData("pic", file.getName(), requestFile);
 
-        Call<UserData> dataCall = api.registerGoogleUser(fullName,email_id,mobile_number,google_id,google_image,body);
+        Call<UserData> dataCall = api.registerGoogleUser(fullName,email_id,mobile_number,google_id,google_image,body,refcode);
         dataCall.enqueue(new Callback<UserData>() {
             @Override
             public void onResponse(Call<UserData> call, Response<UserData> response) {
