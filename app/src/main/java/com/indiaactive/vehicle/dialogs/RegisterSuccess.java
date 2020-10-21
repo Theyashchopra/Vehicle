@@ -33,7 +33,7 @@ public class RegisterSuccess extends Dialog_Get_ImageActivity {
         }).postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                startActivity(new Intent(getActivity(), MainActivity.class));
             }
         },2500);
         return view;

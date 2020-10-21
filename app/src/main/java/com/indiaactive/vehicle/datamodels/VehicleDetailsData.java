@@ -19,6 +19,8 @@ public class VehicleDetailsData {
     int owner_id;
     String model_name;
     int driver_id;
+    String rent_cost;
+    String busy_end;
 
     public VehicleDetailsData(String name, int vehicle_model_id, String yom, int total_run_hrs, int run_km_hr, int fuel_consumption_rate, int fuel_average_consumption_rate, int rent_per_day_with_fuel, int rent_per_hour_with_fuel, int rent_per_hour_without_fuel, int rent_per_day_without_fuel, String ip_address, String plate_no, boolean availibility, int owner_id) {
         this.name = name;
@@ -36,6 +38,10 @@ public class VehicleDetailsData {
         this.plate_no = plate_no;
         this.availibility = availibility;
         this.owner_id = owner_id;
+    }
+
+    public String getBusy_end() {
+        return busy_end;
     }
 
     public String getName() {
@@ -172,5 +178,9 @@ public class VehicleDetailsData {
 
     public String getYear_of_man() {
         return year_of_man;
+    }
+
+    public String getRent_cost() {
+        return rent_cost;
     }
 }

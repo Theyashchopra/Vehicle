@@ -49,7 +49,7 @@
         android:id="@+id/mo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Model: "
+        android:text="Name: "
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_below="@id/viewvehimage"/>
@@ -66,7 +66,7 @@
         android:id="@+id/pl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Licence Plate: "
+        android:text="Vehicle Number: "
         android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
         android:layout_below="@id/mo"/>
@@ -172,7 +172,7 @@
         android:id="@+id/viewrpd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rent per day: "
+        android:text="Cost: "
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_below="@id/org"
@@ -181,7 +181,7 @@
         android:id="@+id/rs1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rs"
+        android:text="\u20B9"
         android:textColor="@android:color/black"
         android:layout_toEndOf="@id/viewrpd"
         android:layout_alignBottom="@id/viewrpd"/>
@@ -198,7 +198,7 @@
         android:id="@+id/viewrph"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rent per hour: "
+        android:text="Available from: "
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_below="@id/viewrpd"
@@ -207,7 +207,7 @@
         android:id="@+id/rs2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rs"
+        android:text=""
         android:textColor="@android:color/black"
         android:layout_toEndOf="@id/viewrph"
         android:layout_alignBottom="@id/viewrph"/>

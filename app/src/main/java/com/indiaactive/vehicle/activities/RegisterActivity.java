@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -63,6 +64,8 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
     ImageView imageView;
     TextInputEditText [] textInputEditTextarr;
     CheckBox terms;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     Object [] objects;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,8 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
     }
 
     private void initialise(){
+        sharedPreferences = getSharedPreferences("login",MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         reference = findViewById(R.id.refcode);
         terms = findViewById(R.id.terms);
         readTerms = findViewById(R.id.read_terms);
@@ -181,6 +186,10 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
                 UserData u = response.body();
                 if(response.isSuccessful()) {
                     if (u.getEmail() != null) {
+                        editor.putBoolean("login",true);
+                        editor.apply();
+                        editor.putInt("id",u.getId());
+                        editor.apply();
                         RegisterSuccess rg = new RegisterSuccess();
                         rg.show(getSupportFragmentManager(), "success");
                     } else {

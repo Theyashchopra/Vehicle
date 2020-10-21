@@ -133,9 +133,9 @@ public class ViewDetailsFragment extends Fragment {
                             getOwnerData(v.getOwner_id());
                             model.setText(v.getModel_name());
                             kms.setText(String.valueOf(v.getRun_km_hr()));
-                            rent_per_day.setText(String.valueOf(v.getRent_per_day_with_fuel()));
-                            rent_per_hour.setText(String.valueOf(v.getRent_per_hour_with_fuel()));
-                            Log.i("YEAR OF MAN",v.getYear_of_man());
+                            rent_per_day.setText(v.getRent_cost());
+                            rent_per_hour.setText(v.getBusy_end());
+                            //Log.i("YEAR OF MAN",v.getYear_of_man());
                             yom.setText(v.getYear_of_man());
                         }catch (Exception e){
                             progressBar.setVisibility(View.INVISIBLE);/*eat the exceptions for now eh!*/ }

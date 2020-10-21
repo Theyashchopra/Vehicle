@@ -93,18 +93,22 @@ public class DashboardFragment extends Fragment {
         });
     }
     public void setupSearch(List<String> searchList){
-        searchAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.select_dialog_item,searchList);
-        autoCompleteTextView.setThreshold(1);
-        autoCompleteTextView.setAdapter(searchAdapter);
-        autoCompleteTextView.setOnItemClickListener((adapterView, view, i, l) -> {
-            selected = searchAdapter.getItem(i);
-            Log.e("yo", selected);
-            createList(selected);
-            searchText.setVisibility(View.GONE);
-            autoCompleteTextView.clearFocus();
-            vehicleRecycle.requestFocus();
-        });
-        searchAdapter.notifyDataSetChanged();
+        try {
+            searchAdapter = new ArrayAdapter<String>(root.getContext(), android.R.layout.select_dialog_item, searchList);
+            autoCompleteTextView.setThreshold(1);
+            autoCompleteTextView.setAdapter(searchAdapter);
+            autoCompleteTextView.setOnItemClickListener((adapterView, view, i, l) -> {
+                selected = searchAdapter.getItem(i);
+                Log.e("yo", selected);
+                createList(selected);
+                searchText.setVisibility(View.GONE);
+                autoCompleteTextView.clearFocus();
+                vehicleRecycle.requestFocus();
+            });
+            searchAdapter.notifyDataSetChanged();
+        }catch (Exception e){
+
+        }
     }
     public void createList(String name) {
         vehiclesList.clear();
