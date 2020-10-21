@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent ();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.i("Login failed", "signInResult:failed code=" + e.getStatusCode());
+            Log.e("Login failed", "signInResult:failed code=" + e.getStatusCode());
             //updateUI(null);
         }
     }
