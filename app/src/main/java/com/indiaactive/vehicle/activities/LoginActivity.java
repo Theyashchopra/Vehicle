@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.regnow).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                startActivity(new Intent(LoginActivity.this,MobileNumberActivity.class));
             }
         });
         initialise();
@@ -140,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                startActivity(new Intent(LoginActivity.this,MobileNumberActivity.class));
             }
         });
         username.addTextChangedListener(new TextWatcher() {

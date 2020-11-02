@@ -39,8 +39,12 @@ public class SearchVehicleListAdapter extends RecyclerView.Adapter<SearchVehicle
     @Override
     public void onBindViewHolder(@NonNull SearchVehicleViewHolder holder, int position) {
         Vehicles curr = mList.get(position);
-        holder.oname.setText(curr.getName());
-        holder.dname.setText(curr.getPlate_no().toUpperCase());
+        try {
+            holder.oname.setText(curr.getName());
+            holder.dname.setText(curr.getPlate_no().toUpperCase());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         holder.cardcl.setOnClickListener(v ->{
             Bundle args = new Bundle();
             args.putInt("vid",mList.get(position).getV_id());

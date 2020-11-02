@@ -107,7 +107,7 @@ public class DashboardFragment extends Fragment {
             });
             searchAdapter.notifyDataSetChanged();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
     }
     public void createList(String name) {
