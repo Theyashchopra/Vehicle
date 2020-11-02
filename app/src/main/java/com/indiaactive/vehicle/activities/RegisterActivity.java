@@ -67,10 +67,15 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     Object [] objects;
+    String paramMobile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        Intent intent = getIntent();
+        paramMobile = intent.getStringExtra("mobile");
+
         findViewById(R.id.registerbt).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +103,8 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
         name = findViewById(R.id.nameRg);
         email = findViewById(R.id.emailRg);
         mobile = findViewById(R.id.mobileRg);
+        mobile.setText(paramMobile);
+        mobile.setEnabled(false);
         password = findViewById(R.id.passwordRg);
         confirm = findViewById(R.id.confirmPasswordRg);
         register = findViewById(R.id.registerbt);

@@ -259,7 +259,8 @@ public class ViewDetailsFragment extends Fragment {
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mobile.isEmpty()){
+                if(mobile == null || mobile.isEmpty()){
+                    Toast.makeText(getContext(), "Not Available", Toast.LENGTH_SHORT).show();
                     getCallPermission();
                     return;
                 }
