@@ -55,7 +55,7 @@
         android:layout_marginTop="20dp"
         android:layout_below="@id/md"
         android:layout_toEndOf="@id/kms"/>
-    <TextView
+    <!--<TextView
         android:id="@+id/rpd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,8 +63,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:layout_below="@id/kms"
-        android:layout_alignParentStart="true"/>
-    <TextView
+        android:layout_alignParentStart="true"/>-->
+   <!-- <TextView
         android:id="@+id/prs1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,8 +72,8 @@
         android:textColor="@android:color/black"
         android:layout_marginTop="20dp"
         android:layout_below="@id/kms"
-        android:layout_toEndOf="@id/rpd"/>
-    <TextView
+        android:layout_toEndOf="@id/rpd"/>-->
+    <!--<TextView
         android:id="@+id/rentperday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -81,8 +81,8 @@
         android:textColor="@android:color/black"
         android:layout_marginTop="20dp"
         android:layout_below="@id/kms"
-        android:layout_toEndOf="@id/prs1"/>
-    <TextView
+        android:layout_toEndOf="@id/prs1"/>-->
+    <!--<TextView
         android:id="@+id/rph"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -90,8 +90,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:layout_below="@id/rpd"
-        android:layout_alignParentStart="true"/>
-    <TextView
+        android:layout_alignParentStart="true"/>-->
+    <!--<TextView
         android:id="@+id/prs2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -99,8 +99,8 @@
         android:textColor="@android:color/black"
         android:layout_marginTop="20dp"
         android:layout_below="@id/rpd"
-        android:layout_toEndOf="@id/rph"/>
-    <TextView
+        android:layout_toEndOf="@id/rph"/>-->
+    <!--<TextView
         android:id="@+id/rentperhour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -108,15 +108,35 @@
         android:textColor="@android:color/black"
         android:layout_marginTop="20dp"
         android:layout_below="@id/rpd"
-        android:layout_toEndOf="@id/prs2"/>
+        android:layout_toEndOf="@id/prs2"/>-->
+    <TextView
+        android:id="@+id/rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/kms"
+        android:layout_alignParentStart="true"/>
+    <TextView
+        android:id="@+id/rateval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="14000"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@id/kms"
+        android:layout_toEndOf="@id/rate"/>
+
     <Button
         android:id="@+id/pviewinfo"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="VIEW INFO"
+        android:text="VIEW INFORMATION"
         android:textColor="#fff"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/rph"/>
+        android:layout_below="@+id/rate"/>
 
 </RelativeLayout>

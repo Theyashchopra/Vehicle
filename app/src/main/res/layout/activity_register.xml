@@ -151,6 +151,14 @@
             android:id="@+id/read_terms"
             android:layout_margin="8dp"
             android:text="Click here to read Terms of Service"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:background="#fff"
+            android:id="@+id/read_policy"
+            android:layout_margin="8dp"
+            android:text="Click here to read Privacy Policy"/>
     <Button
         android:id="@+id/registerbt"
         android:layout_width="match_parent"

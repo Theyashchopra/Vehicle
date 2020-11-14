@@ -672,9 +672,10 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
                 args.putString("name",v.getName());
                 args.putString("madein",v.getYear_of_man());
                 args.putString("kms",String.valueOf(v.getRun_km_hr()));
-                args.putString("rentperday",String.valueOf(v.getRent_per_day_with_fuel()));
-                args.putString("rentperHour",String.valueOf(v.getRent_per_hour_with_fuel()));
-                args.putString("number",v.getPlate_no());
+                args.putString("rent",String.valueOf(v.getRent_cost()));
+//                args.putString("rentperday",String.valueOf(v.getRent_per_day_with_fuel()));
+//                args.putString("rentperHour",String.valueOf(v.getRent_per_hour_with_fuel()));
+//                args.putString("number",v.getPlate_no());
                 mk.setArguments(args);
                 mk.show(getActivity().getSupportFragmentManager(),"marker");
                 return true;

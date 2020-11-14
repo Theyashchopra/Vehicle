@@ -107,6 +107,14 @@
         android:textColor="@android:color/white"
         android:background="@drawable/background_accent"
         android:layout_margin="8dp" />
+        <Button
+            android:id="@+id/redirect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Redirect"
+            android:layout_margin="8dp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/background_accent"/>
     <Button
         android:id="@+id/logout"
         android:layout_width="match_parent"

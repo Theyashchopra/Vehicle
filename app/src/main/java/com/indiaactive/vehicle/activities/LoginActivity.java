@@ -131,8 +131,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 hideKeyboard(LoginActivity.this);
-                validateFieldsandLogin();
                 progressBar.setVisibility(View.VISIBLE);
+                validateFieldsandLogin();
                 login.setEnabled(false);
             }
         });
@@ -218,6 +218,7 @@ public class LoginActivity extends AppCompatActivity {
                             .duration(2000)
                             .playOn(findViewById(R.id.passwordtf));
                     notice.setText("Invalid Credentials");
+                    progressBar.setVisibility(View.INVISIBLE);
                 }
             }
 
