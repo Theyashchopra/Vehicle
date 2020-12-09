@@ -17,8 +17,14 @@ import com.indiaactive.vehicle.R;
 
 public class MarkerPopup extends DialogFragment {
     View view;
-    TextView name,madeintv,rpDaytv,kmscompletedtv,rpHourtv;
-    String vName,madeIn,kmscompleted,rentPerDay,rentPerHour,plate;
+    TextView name,madeintv,rpDaytv,kmscompletedtv,rpHourtv, ratetv;
+    String vName;
+    String madeIn;
+    String kmscompleted;
+    String rentPerDay;
+    String rentPerHour;
+    String plate;
+    String rate;
     Button viewInfo;
     int vid;
     @Nullable
@@ -32,9 +38,10 @@ public class MarkerPopup extends DialogFragment {
         vName = args.getString("name");
         madeIn = args.getString("madein");
         kmscompleted = args.getString("kms");
-        rentPerDay = args.getString("rentperday");
-        rentPerHour = args.getString("rentperHour");
-        plate = args.getString("number");
+//        rentPerDay = args.getString("rentperday");
+//        rentPerHour = args.getString("rentperHour");
+//        plate = args.getString("number");
+        rate = args.getString("rent");
 
         Dialog dialog = getDialog();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -42,15 +49,17 @@ public class MarkerPopup extends DialogFragment {
 
         name = view.findViewById(R.id.company_name);
         madeintv = view.findViewById(R.id.made);
-        rpDaytv = view.findViewById(R.id.rentperday);
+//        rpDaytv = view.findViewById(R.id.rentperday);
         kmscompletedtv = view.findViewById(R.id.kmscompleted);
-        rpHourtv = view.findViewById(R.id.rentperhour);
+//        rpHourtv = view.findViewById(R.id.rentperhour);
+        ratetv = view.findViewById(R.id.rateval);
         viewInfo = view.findViewById(R.id.pviewinfo);
         name.setText(vName);
         madeintv.setText(madeIn);
         kmscompletedtv.setText(kmscompleted);
-        rpDaytv.setText(rentPerDay);
-        rpHourtv.setText(rentPerHour);
+//        rpDaytv.setText(rentPerDay);
+//        rpHourtv.setText(rentPerHour);
+        ratetv.setText(rate);
 
         viewInfo.setOnClickListener(v -> {
             Bundle args1 = new Bundle();

@@ -32,6 +32,7 @@ public class Vehicles {
     public String busy_end;
     public boolean isDocument;
     public boolean isImage;
+    private String rent_cost;
 
     public Vehicles(){}
 
@@ -145,6 +146,14 @@ public class Vehicles {
 
     public boolean isImage() {
         return isImage;
+    }
+
+    public String getRent_cost() {
+        return rent_cost;
+    }
+
+    public void setRent_cost(String rent_cost) {
+        this.rent_cost = rent_cost;
     }
 }
 

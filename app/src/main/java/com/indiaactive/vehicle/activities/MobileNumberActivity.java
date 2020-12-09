@@ -55,7 +55,7 @@ public class MobileNumberActivity extends AppCompatActivity {
         go = findViewById(R.id.go);
         user = "mdrentals";
         password = "india123";
-        senderid = "ICTRDn";
+        senderid = "HONMAP";
         channel = "Trans";
         DCS = 0;
         flash = 0;

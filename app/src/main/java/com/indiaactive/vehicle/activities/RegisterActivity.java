@@ -53,7 +53,7 @@ import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity implements Dialog_Get_ImageActivity.onPhotoSelectedListener, Dialog_Get_ImageActivity.MyDialogCloseListener {
 
-    TextView notice, readTerms;
+    TextView notice, readTerms, readPolicy;
     MultipartBody.Part isImage;
     Bitmap imagebitmap, profilebitmap;
     Uri imageuri,profileuri,generalUri;
@@ -98,6 +98,7 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
         reference = findViewById(R.id.refcode);
         terms = findViewById(R.id.terms);
         readTerms = findViewById(R.id.read_terms);
+        readPolicy = findViewById(R.id.read_policy);
         notice = findViewById(R.id.notice);
         progressBar = findViewById(R.id.progress);
         name = findViewById(R.id.nameRg);
@@ -269,7 +270,21 @@ public class RegisterActivity extends AppCompatActivity implements Dialog_Get_Im
             @Override
             public void onClick(View view) {
                 try {
-                    Uri uri = Uri.parse("http://rentbygps.epizy.com/hireonmap/term_of_service.html"); // missing 'http://' will cause crashed
+                    Uri uri = Uri.parse("http://hireonmap.com/terms-and-conditions.html"); // missing 'http://' will cause crashed
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        readPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Uri uri = Uri.parse("http://hireonmap.com/privacy-policy.html"); // missing 'http://' will cause crashed
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     startActivity(intent);
                 }catch (Exception e){
