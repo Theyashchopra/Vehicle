@@ -44,15 +44,15 @@ public class SearchMarkerPopup extends DialogFragment {
 
         name = view.findViewById(R.id.company_name);
         madeintv = view.findViewById(R.id.made);
-//        rpDaytv = view.findViewById(R.id.rentperday);
+        //rpDaytv = view.findViewById(R.id.rentperday);
         kmscompletedtv = view.findViewById(R.id.kmscompleted);
-//        rpHourtv = view.findViewById(R.id.rentperhour);
+        //rpHourtv = view.findViewById(R.id.rentperhour);
         viewInfo = view.findViewById(R.id.pviewinfo);
         name.setText(vName);
         madeintv.setText(madeIn);
         kmscompletedtv.setText(kmscompleted);
-        rpDaytv.setText(rentPerDay);
-        rpHourtv.setText(rentPerHour);
+        //rpDaytv.setText(rentPerDay);
+        //rpHourtv.setText(rentPerHour);
 
         viewInfo.setOnClickListener(v -> {
             Bundle args1 = new Bundle();
