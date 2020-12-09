@@ -714,7 +714,11 @@ public class HomeFragment extends Fragment implements GoogleMap.OnMapClickListen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mapView.onDestroy();
+        try {
+            mapView.onDestroy();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     @Override
     public void onLowMemory() {

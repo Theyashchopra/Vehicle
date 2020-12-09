@@ -42,7 +42,12 @@ public class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.MasterMode
     @NonNull
     @Override
     public MasterModel onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MasterModel(LayoutInflater.from(context).inflate(R.layout.master_item, parent, false));
+        try {
+            return new MasterModel(LayoutInflater.from(context).inflate(R.layout.master_item, parent, false));
+        }catch (Exception e){
+            return null;
+        }
+
     }
 
     @Override
